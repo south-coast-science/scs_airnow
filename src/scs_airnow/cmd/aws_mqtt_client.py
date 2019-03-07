@@ -1,1 +1,0 @@
-../../../../scs_analysis/src/scs_analysis/cmd/aws_mqtt_client.py
