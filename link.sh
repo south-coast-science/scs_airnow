@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-# make (or update) hard links to source files in other repos
+# For development use only...
+# Make (or update) hard links to source files in other repos
+# - required, because PyCharm remakes files, rather than updating them.
 
 SOURCE_DIR=../scs_analysis/src/scs_analysis
 TARGET_DIR=src/scs_airnow
