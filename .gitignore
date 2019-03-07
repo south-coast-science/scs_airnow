@@ -102,3 +102,23 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# PyCharm
+.idea/
+
+# South Coast Science
+**/*.csv
+**/*.log
+**/*.numbers
+**/*.xls
+**/*.xlsx
+
+# PyCharm
+.idea/
+
+# South Coast Science
+**/*.csv
+**/*.log
+**/*.numbers
+**/*.xls
+**/*.xlsx
