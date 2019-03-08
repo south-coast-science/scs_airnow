@@ -4,6 +4,8 @@
 # Make (or update) hard links to source files in other repos
 # - required, because PyCharm remakes files, rather than updating them.
 
+# https://unix.stackexchange.com/questions/231955/why-wont-my-hard-links-update-each-other
+
 SOURCE=../scs_analysis/src/scs_analysis
 TARGET=src/scs_airnow
 
