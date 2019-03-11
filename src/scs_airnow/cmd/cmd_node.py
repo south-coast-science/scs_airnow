@@ -8,6 +8,8 @@ source repo: scs_analysis
 
 import optparse
 
+from scs_core.data.path_dict import PathDict
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -51,10 +53,25 @@ class CmdNode(object):
 
     def includes(self, path):
         for sub_path in self.sub_paths:
-            if path.startswith(sub_path):
-                return not self.exclude
+            includes = PathDict.sub_path_includes_path(sub_path, path)
 
-        return self.exclude
+            if includes and not self.exclude:
+                return True
+
+            # if includes and not self.exclude:
+            #     return True
+
+            # return not includes if self.exclude else includes
+
+        return not self.exclude
+
+
+    # def includes(self, path):
+    #     for sub_path in self.sub_paths:
+    #         if path.startswith(sub_path):
+    #             return not self.exclude
+    #
+    #     return self.exclude
 
 
     # ----------------------------------------------------------------------------------------------------------------

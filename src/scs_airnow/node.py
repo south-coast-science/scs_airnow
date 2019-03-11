@@ -81,8 +81,8 @@ if __name__ == '__main__':
         node = None
         first = True
 
-        if cmd.exclude and not cmd.sub_paths:           # exclude everything
-            exit(0)
+        # if cmd.exclude and not cmd.sub_paths:           # exclude everything
+        #     exit(0)
 
         for line in sys.stdin:
             jstr = line.strip()
