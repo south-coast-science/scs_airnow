@@ -24,7 +24,7 @@ Alternatively, if the node is an array or other iterable type, then it may be ou
 separated by newline characters) according to the -s flag.
 
 SYNOPSIS
-node.py [{ [-x] [-a] | -s }] [-v] [SUB_PATH_1 ... SUB_PATH_N]
+node.py { [-x] [-a] | -s } [-v] [SUB_PATH_1 ... SUB_PATH_N]
 
 EXAMPLES
 csv_reader.py climate.csv | node.py -x val.bar
@@ -81,9 +81,6 @@ if __name__ == '__main__':
         node = None
         first = True
 
-        if cmd.exclude and not cmd.sub_paths:           # exclude everything
-            exit(0)
-
         for line in sys.stdin:
             jstr = line.strip()
             datum = PathDict.construct_from_jstr(jstr)
@@ -92,6 +89,9 @@ if __name__ == '__main__':
                 continue
 
             document_count += 1
+
+            if cmd.exclude and not cmd.sub_paths:
+                continue                                # everything is excluded
 
             # build...
             if not cmd.sub_paths:
