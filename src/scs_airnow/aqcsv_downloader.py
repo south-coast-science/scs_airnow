@@ -37,6 +37,8 @@ from scs_core.aqcsv.connector.mapping_task import MappingTaskList
 
 from scs_core.aws.data.byline import Byline
 
+from scs_core.sys.filesystem import Filesystem
+
 from scs_host.sys.host import Host
 
 
@@ -84,6 +86,10 @@ if __name__ == '__main__':
             print("aqcsv_downloader: %s" % task, file=sys.stderr)
             sys.stderr.flush()
 
+
+        # ------------------------------------------------------------------------------------------------------------
+        # validation...
+
         # datetimes...
         start = cmd.start.as_iso8601()
         end = cmd.end.as_iso8601()
@@ -102,7 +108,10 @@ if __name__ == '__main__':
                   file=sys.stderr)
             exit(1)
 
-        # directories...
+
+        # ------------------------------------------------------------------------------------------------------------
+        # run: directories...
+
         if cmd.verbose:
             print("-", file=sys.stderr)
             print("making directories...", file=sys.stderr)
@@ -112,16 +121,13 @@ if __name__ == '__main__':
 
         file_path = os.path.join(dir_name, file_prefix)
 
-        args = ['mkdir', dir_name]
-        sp1 = subprocess.Popen(args)
-
-        sp1.wait()
+        Filesystem.mkdir(dir_name)
 
 
         # ------------------------------------------------------------------------------------------------------------
-        # run env download...
+        # run: env download...
 
-        topic_filename = file_path + '-' + task.topic + '.csv'
+        env_filename = file_path + '-' + task.topic + '.csv'
 
         if cmd.verbose:
             print("-", file=sys.stderr)
@@ -136,14 +142,14 @@ if __name__ == '__main__':
         args = ['sample_aggregate.py', '-c', task.checkpoint]
         sp3 = subprocess.Popen(args + verbose, stdin=sp2.stdout, stdout=subprocess.PIPE)
 
-        args = ['csv_writer.py', topic_filename]
+        args = ['csv_writer.py', env_filename]
         sp4 = subprocess.Popen(args, stdin=sp3.stdout)
 
         sp4.wait()
 
 
         # ------------------------------------------------------------------------------------------------------------
-        # run status download...
+        # run: status download...
 
         status_filename = file_path + '-status.csv'
 
@@ -167,7 +173,7 @@ if __name__ == '__main__':
 
 
         # ------------------------------------------------------------------------------------------------------------
-        # run join...
+        # run: join...
 
         joined_filename = file_path + '-joined.csv'
 
@@ -175,7 +181,7 @@ if __name__ == '__main__':
             print("-", file=sys.stderr)
             print("joining data...", file=sys.stderr)
 
-        args = ['csv_join.py', '-i', '-l', task.topic, 'rec', topic_filename, '-r', 'status', 'rec', status_filename]
+        args = ['csv_join.py', '-i', '-l', task.topic, 'rec', env_filename, '-r', 'status', 'rec', status_filename]
         sp1 = subprocess.Popen(args + verbose, stdout=subprocess.PIPE)
 
         args = ['csv_writer.py', joined_filename]
