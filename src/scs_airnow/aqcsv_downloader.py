@@ -113,9 +113,9 @@ if __name__ == '__main__':
         file_path = os.path.join(dir_name, file_prefix)
 
         args = ['mkdir', dir_name]
-        ps1 = subprocess.Popen(args)
+        sp1 = subprocess.Popen(args)
 
-        ps1.wait()
+        sp1.wait()
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -128,18 +128,18 @@ if __name__ == '__main__':
             print("downloading %s data..." % task.topic, file=sys.stderr)
 
         args = ['aws_topic_history.py', task.environment_path(), '-s', start, '-e', end]
-        ps1 = subprocess.Popen(args + verbose, stdout=subprocess.PIPE)
+        sp1 = subprocess.Popen(args + verbose, stdout=subprocess.PIPE)
 
         args = ['node.py', 'rec', 'tag', 'src'] + ['val.' + param for param in task.parameters]
-        ps2 = subprocess.Popen(args + verbose, stdin=ps1.stdout, stdout=subprocess.PIPE)
+        sp2 = subprocess.Popen(args + verbose, stdin=sp1.stdout, stdout=subprocess.PIPE)
 
         args = ['sample_aggregate.py', '-c', task.checkpoint]
-        ps3 = subprocess.Popen(args + verbose, stdin=ps2.stdout, stdout=subprocess.PIPE)
+        sp3 = subprocess.Popen(args + verbose, stdin=sp2.stdout, stdout=subprocess.PIPE)
 
         args = ['csv_writer.py', topic_filename]
-        ps4 = subprocess.Popen(args, stdin=ps3.stdout)
+        sp4 = subprocess.Popen(args, stdin=sp3.stdout)
 
-        ps4.wait()
+        sp4.wait()
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -152,18 +152,18 @@ if __name__ == '__main__':
             print("downloading status data...", file=sys.stderr)
 
         args = ['aws_topic_history.py', task.status_path(), '-s', start, '-e', end]
-        ps1 = subprocess.Popen(args + verbose, stdout=subprocess.PIPE)
+        sp1 = subprocess.Popen(args + verbose, stdout=subprocess.PIPE)
 
-        args = ['node.py', 'rec', 'val.tz', 'val.sch', 'val.gps', 'val.airnow']
-        ps2 = subprocess.Popen(args + verbose, stdin=ps1.stdout, stdout=subprocess.PIPE)
+        args = ['node.py', 'rec', 'tag', 'val.tz', 'val.sch', 'val.gps', 'val.airnow']
+        sp2 = subprocess.Popen(args + verbose, stdin=sp1.stdout, stdout=subprocess.PIPE)
 
         args = ['sample_aggregate.py', '-c', task.checkpoint]
-        ps3 = subprocess.Popen(args + verbose, stdin=ps2.stdout, stdout=subprocess.PIPE)
+        sp3 = subprocess.Popen(args + verbose, stdin=sp2.stdout, stdout=subprocess.PIPE)
 
         args = ['csv_writer.py', status_filename]
-        ps4 = subprocess.Popen(args, stdin=ps3.stdout)
+        sp4 = subprocess.Popen(args, stdin=sp3.stdout)
 
-        ps4.wait()
+        sp4.wait()
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -176,12 +176,12 @@ if __name__ == '__main__':
             print("joining data...", file=sys.stderr)
 
         args = ['csv_join.py', '-i', '-l', task.topic, 'rec', topic_filename, '-r', 'status', 'rec', status_filename]
-        ps1 = subprocess.Popen(args + verbose, stdout=subprocess.PIPE)
+        sp1 = subprocess.Popen(args + verbose, stdout=subprocess.PIPE)
 
         args = ['csv_writer.py', joined_filename]
-        ps2 = subprocess.Popen(args, stdin=ps1.stdout)
+        sp2 = subprocess.Popen(args, stdin=sp1.stdout)
 
-        ps2.wait()
+        sp2.wait()
 
         if cmd.verbose:
             print("-", file=sys.stderr)
