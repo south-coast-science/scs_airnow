@@ -7,6 +7,8 @@ Created on 13 March 2019
 import optparse
 
 
+# TODO: split off SiteConf functions
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class CmdAQCSVTaskManager(object):
@@ -128,7 +130,6 @@ class CmdAQCSVTaskManager(object):
     @property
     def verbose(self):
         return self.__opts.verbose
-
 
 
     # ----------------------------------------------------------------------------------------------------------------
