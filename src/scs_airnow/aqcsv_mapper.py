@@ -11,7 +11,7 @@ DESCRIPTION
 The aqcsv_mapper utility is used to
 
 SYNOPSIS
-
+aqcsv_mapper.py -t ORG GROUP LOC TOPIC [-d DIR] [-v]
 
 EXAMPLES
 
@@ -26,12 +26,15 @@ SEE ALSO
 scs_analysis/aws_topic_history
 """
 
+import os
 import sys
 
 from scs_airnow.cmd.cmd_aqcsv_mapper import CmdAQCSVMapper
 
 from scs_core.aqcsv.connector.datum_mapping import DatumMapping
 from scs_core.aqcsv.connector.mapping_task import MappingTaskList
+
+from scs_core.csv.csv_writer import CSVWriter
 
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONify
@@ -43,6 +46,10 @@ from scs_host.sys.host import Host
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
+
+    writer = None
+
+    document_count = 0
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -81,17 +88,36 @@ if __name__ == '__main__':
             print("aqcsv_mapper: %s" % task, file=sys.stderr)
             sys.stderr.flush()
 
+        # CSVWriter...
+        if cmd.dir is not None:
+            filename = os.path.join(cmd.dir, task.filename('csv'))
+            writer = CSVWriter(filename=filename, exclude_header=True)
+
+            if cmd.verbose:
+                print("aqcsv_mapper: %s" % writer, file=sys.stderr)
+                sys.stderr.flush()
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
         for line in sys.stdin:
-            jstr = line.strip()
-            datum = PathDict.construct_from_jstr(jstr)
+            datum = PathDict.construct_from_jstr(line.strip())
+
+            if datum is None:
+                continue
+
+            document_count += 1
 
             for mapping in task.mappings():
                 record = mapping.aqcsv_record(datum)
-                print(JSONify.dumps(record))
+                jstr = JSONify.dumps(record)
+
+                if writer is None:
+                    print(jstr)
+
+                else:
+                    writer.write(jstr)
 
             sys.stdout.flush()
 
@@ -102,3 +128,10 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         if cmd.verbose:
             print("aqcsv_mapper: KeyboardInterrupt", file=sys.stderr)
+
+    finally:
+        if writer is not None:
+            writer.close()
+
+        if cmd.verbose:
+            print("aqcsv_mapper: documents: %d" % document_count, file=sys.stderr)
