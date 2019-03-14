@@ -15,7 +15,7 @@ period=10
 
 checkpoint=**:/01:00
 
-wd=../src/scs_airnow
+wd=.
 
 # environment...
 ${wd}/aws_topic_history.py -v ${org}/${group}/loc/${loc}/${topic} -t ${period} | \
