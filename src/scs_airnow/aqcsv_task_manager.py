@@ -32,6 +32,7 @@ import sys
 
 from scs_airnow.cmd.cmd_aqcsv_task_manager import CmdAQCSVTaskManager
 
+from scs_core.aqcsv.connector.datum_mapping import DatumMapping
 from scs_core.aqcsv.connector.mapping_task import MappingTask, MappingTaskList
 
 from scs_core.data.checkpoint_generator import CheckpointGenerator
@@ -81,7 +82,12 @@ if __name__ == '__main__':
     # set...
     if cmd.is_set():
         if not Datum.is_numeric(cmd.set_loc):
-            print("aqcsv_task_manager: the loc field %s should be an integer." % cmd.delete_loc,
+            print("aqcsv_task_manager: the loc value %s should be an integer." % cmd.delete_loc,
+                  file=sys.stderr)
+            exit(2)
+
+        if not DatumMapping.is_valid_topic(cmd.set_topic):
+            print("aqcsv_task_manager: the topic %s is invalid." % cmd.set_topic,
                   file=sys.stderr)
             exit(2)
 
@@ -101,7 +107,13 @@ if __name__ == '__main__':
     # delete...
     if cmd.is_delete():
         if not Datum.is_numeric(cmd.delete_loc):
-            print("aqcsv_task_manager: the loc field (%s) should be an integer." % cmd.delete_loc, file=sys.stderr)
+            print("aqcsv_task_manager: the loc value %s should be an integer." % cmd.delete_loc,
+                  file=sys.stderr)
+            exit(2)
+
+        if not DatumMapping.is_valid_topic(cmd.delete_topic):
+            print("aqcsv_task_manager: the topic %s is invalid." % cmd.delete_topic,
+                  file=sys.stderr)
             exit(2)
 
         tasks.remove((cmd.delete_org, cmd.delete_group, int(cmd.delete_loc), cmd.delete_topic))
