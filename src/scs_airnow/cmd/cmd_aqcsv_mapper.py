@@ -23,6 +23,9 @@ class CmdAQCSVMapper(object):
                                  help="specify the task")
 
         # optional...
+        self.__parser.add_option("--include-header", "-i", action="store_true", dest="header", default=False,
+                                 help="report narrative to stderr")
+
         self.__parser.add_option("--dir", "-d", type="string", nargs=1, action="store", dest="dir",
                                  help="write the output to a CSV file in the named directory")
 
@@ -64,6 +67,11 @@ class CmdAQCSVMapper(object):
 
 
     @property
+    def header(self):
+        return self.__opts.header
+
+
+    @property
     def dir(self):
         return self.__opts.dir
 
@@ -80,4 +88,5 @@ class CmdAQCSVMapper(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdAQCSVMapper:{task:%s, dir:%s, verbose:%s}" % (self.__opts.task, self.dir, self.verbose)
+        return "CmdAQCSVMapper:{task:%s, header:%s, dir:%s, verbose:%s}" % \
+               (self.__opts.task, self.header, self.dir, self.verbose)
