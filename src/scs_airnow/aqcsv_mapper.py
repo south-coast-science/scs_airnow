@@ -11,7 +11,7 @@ DESCRIPTION
 The aqcsv_mapper utility is used to
 
 SYNOPSIS
-aqcsv_mapper.py -t ORG GROUP LOC TOPIC [-d DIR] [-v]
+aqcsv_mapper.py -t ORG GROUP LOC TOPIC [-i] [-d DIR] [-v]
 
 EXAMPLES
 
@@ -76,6 +76,8 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        exclude_header = not cmd.header
+
         # MappingTask...
         tasks = MappingTaskList.load(Host)
         task = tasks.item((cmd.task_org, cmd.task_group, int(cmd.task_loc), cmd.task_topic))
@@ -91,7 +93,7 @@ if __name__ == '__main__':
         # CSVWriter...
         if cmd.dir is not None:
             filename = os.path.join(cmd.dir, task.filename('csv'))
-            writer = CSVWriter(filename=filename, exclude_header=True)
+            writer = CSVWriter(filename=filename, exclude_header=exclude_header)
 
             if cmd.verbose:
                 print("aqcsv_mapper: %s" % writer, file=sys.stderr)
