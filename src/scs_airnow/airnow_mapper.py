@@ -8,16 +8,16 @@ Created on 14 Mar 2019
 source repo: scs_airnow
 
 DESCRIPTION
-The aqcsv_mapper utility is used to
+The airnow_mapper utility is used to
 
 SYNOPSIS
-aqcsv_mapper.py -t ORG GROUP LOC TOPIC [-v]
+airnow_mapper.py -t ORG GROUP LOC TOPIC [-v]
 
 EXAMPLES
 
 
 FILES
-~/SCS/aws/aqcsv_mapper.json
+~/SCS/aws/airnow_mapper.json
 
 DOCUMENT EXAMPLE
 {"endpoint": "aws.southcoastscience.com", "api-key": "de92c5ff-b47a-4cc4-a04c-62d684d64a1f"}
@@ -57,15 +57,15 @@ if __name__ == '__main__':
         exit(2)
 
     if not Datum.is_numeric(cmd.task_loc):
-        print("aqcsv_mapper: the loc value %s should be an integer." % cmd.task_loc, file=sys.stderr)
+        print("airnow_mapper: the loc value %s should be an integer." % cmd.task_loc, file=sys.stderr)
         exit(2)
 
     if not DatumMapping.is_valid_topic(cmd.task_topic):
-        print("aqcsv_mapper: the topic %s is invalid." % cmd.task_topic, file=sys.stderr)
+        print("airnow_mapper: the topic %s is invalid." % cmd.task_topic, file=sys.stderr)
         exit(2)
 
     if cmd.verbose:
-        print("aqcsv_mapper: %s" % cmd, file=sys.stderr)
+        print("airnow_mapper: %s" % cmd, file=sys.stderr)
         sys.stderr.flush()
 
     try:
@@ -77,11 +77,11 @@ if __name__ == '__main__':
         task = tasks.item((cmd.task_org, cmd.task_group, int(cmd.task_loc), cmd.task_topic))
 
         if task is None:
-            print("aqcsv_mapper: task not found.", file=sys.stderr)
+            print("airnow_mapper: task not found.", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:
-            print("aqcsv_mapper: %s" % task, file=sys.stderr)
+            print("airnow_mapper: %s" % task, file=sys.stderr)
             sys.stderr.flush()
 
 
@@ -110,8 +110,8 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt:
         if cmd.verbose:
-            print("aqcsv_mapper: KeyboardInterrupt", file=sys.stderr)
+            print("airnow_mapper: KeyboardInterrupt", file=sys.stderr)
 
     finally:
         if cmd.verbose:
-            print("aqcsv_mapper: documents: %d" % document_count, file=sys.stderr)
+            print("airnow_mapper: documents: %d" % document_count, file=sys.stderr)

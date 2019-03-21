@@ -8,13 +8,13 @@ Created on 13 March 2019
 source repo: scs_airnow
 
 DESCRIPTION
-The aqcsv_task_manager utility is used to
+The airnow_task_manager utility is used to
 
 SYNOPSIS
-aqcsv_task_manager.py [{ -l | -s [-c CODE] ORG GROUP LOC TOPIC DEVICE CHECKPOINT P1..PN | -d ORG GROUP LOC TOPIC }] [-v]
+airnow_task_manager.py [{ -l | -s [-c CODE] ORG GROUP LOC TOPIC DEVICE CHECKPOINT P1..PN | -d ORG GROUP LOC TOPIC }] [-v]
 
 EXAMPLES
-./aqcsv_task_manager.py -v -s -c 321MM987654321 scs demo 1 particulates praxis-000401 **:/01:00 val.pm1 val.pm2p5
+./airnow_task_manager.py -v -s -c 321MM987654321 scs demo 1 particulates praxis-000401 **:/01:00 val.pm1 val.pm2p5
 
 FILES
 ~/SCS/aws/aqcsv_mapping_tasks.json
@@ -28,7 +28,7 @@ DOCUMENT EXAMPLE
 
 SEE ALSO
 scs_analysis/aqcsv_mapper
-scs_analysis/aqcsv_task_manager
+scs_analysis/airnow_task_manager
 """
 
 import sys
@@ -61,7 +61,7 @@ if __name__ == '__main__':
         exit(2)
 
     if cmd.verbose:
-        print("aqcsv_task_manager: %s" % cmd, file=sys.stderr)
+        print("airnow_task_manager: %s" % cmd, file=sys.stderr)
         sys.stderr.flush()
 
 
@@ -85,17 +85,17 @@ if __name__ == '__main__':
     # set...
     if cmd.is_set():
         if not Datum.is_numeric(cmd.set_loc):
-            print("aqcsv_task_manager: the loc value %s should be an integer." % cmd.delete_loc,
+            print("airnow_task_manager: the loc value %s should be an integer." % cmd.delete_loc,
                   file=sys.stderr)
             exit(2)
 
         if not DatumMapping.is_valid_topic(cmd.set_topic):
-            print("aqcsv_task_manager: the topic %s is invalid." % cmd.set_topic,
+            print("airnow_task_manager: the topic %s is invalid." % cmd.set_topic,
                   file=sys.stderr)
             exit(2)
 
         if not CheckpointGenerator.is_valid(cmd.set_checkpoint):
-            print("aqcsv_task_manager: the checkpoint specification %s is invalid." % cmd.set_checkpoint,
+            print("airnow_task_manager: the checkpoint specification %s is invalid." % cmd.set_checkpoint,
                   file=sys.stderr)
             exit(2)
 
@@ -110,12 +110,12 @@ if __name__ == '__main__':
     # delete...
     if cmd.is_delete():
         if not Datum.is_numeric(cmd.delete_loc):
-            print("aqcsv_task_manager: the loc value %s should be an integer." % cmd.delete_loc,
+            print("airnow_task_manager: the loc value %s should be an integer." % cmd.delete_loc,
                   file=sys.stderr)
             exit(2)
 
         if not DatumMapping.is_valid_topic(cmd.delete_topic):
-            print("aqcsv_task_manager: the topic %s is invalid." % cmd.delete_topic,
+            print("airnow_task_manager: the topic %s is invalid." % cmd.delete_topic,
                   file=sys.stderr)
             exit(2)
 

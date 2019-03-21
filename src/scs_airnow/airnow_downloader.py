@@ -8,18 +8,13 @@ Created on 14 Mar 2019
 source repo: scs_airnow
 
 DESCRIPTION
-The aqcsv_downloader utility is used to
+The airnow_downloader utility is used to
 
 SYNOPSIS
-aqcsv_downloader.py -t ORG GROUP LOC TOPIC -s START -e END [-d DIR] [-v]
+airnow_downloader.py -t ORG GROUP LOC TOPIC -s START -e END [-d DIR] [-v]
 
 EXAMPLES
-
-
-FILES
-~/SCS/aws/aqcsv_downloader.json
-
-DOCUMENT EXAMPLE
+./airnow_downloader.py -t unep ethiopia 1 particulates -s 2019-03-20T00:00:00Z -e 2019-03-21T00:00:00Z -d data -v
 
 SEE ALSO
 scs_analysis/aqcsv_mapper
@@ -55,15 +50,15 @@ if __name__ == '__main__':
     cmd = CmdAirNowDownloader()
 
     if not cmd.is_valid_start():
-        print("aqcsv_downloader: invalid format for start datetime.", file=sys.stderr)
+        print("airnow_downloader: invalid format for start datetime.", file=sys.stderr)
         exit(2)
 
     if not cmd.is_valid_end():
-        print("aqcsv_downloader: invalid format for end datetime.", file=sys.stderr)
+        print("airnow_downloader: invalid format for end datetime.", file=sys.stderr)
         exit(2)
 
     if not Datum.is_numeric(cmd.task_loc):
-        print("aqcsv_downloader: the loc value %s should be an integer." % cmd.task_loc, file=sys.stderr)
+        print("airnow_downloader: the loc value %s should be an integer." % cmd.task_loc, file=sys.stderr)
         exit(2)
 
     if not cmd.is_valid():
@@ -73,7 +68,7 @@ if __name__ == '__main__':
     verbose = ['-v'] if cmd.verbose else []
 
     if cmd.verbose:
-        print("aqcsv_downloader: %s" % cmd, file=sys.stderr)
+        print("airnow_downloader: %s" % cmd, file=sys.stderr)
         sys.stderr.flush()
 
 
@@ -86,11 +81,11 @@ if __name__ == '__main__':
         task = tasks.item((cmd.task_org, cmd.task_group, int(cmd.task_loc), cmd.task_topic))
 
         if task is None:
-            print("aqcsv_downloader: task not found.", file=sys.stderr)
+            print("airnow_downloader: task not found.", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:
-            print("aqcsv_downloader: %s" % task, file=sys.stderr)
+            print("airnow_downloader: %s" % task, file=sys.stderr)
             sys.stderr.flush()
 
 
@@ -111,7 +106,7 @@ if __name__ == '__main__':
         byline = Byline.construct_from_jdict(json.loads(jstr))
 
         if byline.rec < cmd.end:
-            print("aqcsv_downloader: latest report (%s) is earlier than the requested end." % byline.rec.as_iso8601(),
+            print("airnow_downloader: latest report (%s) is earlier than the requested end." % byline.rec.as_iso8601(),
                   file=sys.stderr)
             exit(1)
 
@@ -202,4 +197,4 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt:
         if cmd.verbose:
-            print("aqcsv_downloader: KeyboardInterrupt", file=sys.stderr)
+            print("airnow_downloader: KeyboardInterrupt", file=sys.stderr)
