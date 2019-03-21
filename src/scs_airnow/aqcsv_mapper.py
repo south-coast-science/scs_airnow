@@ -5,13 +5,13 @@ Created on 14 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-source repo: scs_analysis
+source repo: scs_airnow
 
 DESCRIPTION
 The aqcsv_mapper utility is used to
 
 SYNOPSIS
-aqcsv_mapper.py -t ORG GROUP LOC TOPIC [-i] [-d DIR] [-v]
+aqcsv_mapper.py -t ORG GROUP LOC TOPIC [-v]
 
 EXAMPLES
 
@@ -23,18 +23,16 @@ DOCUMENT EXAMPLE
 {"endpoint": "aws.southcoastscience.com", "api-key": "de92c5ff-b47a-4cc4-a04c-62d684d64a1f"}
 
 SEE ALSO
-scs_analysis/aws_topic_history
+scs_analysis/aqcsv_downloader
+scs_analysis/aqcsv_task_manager
 """
 
-import os
 import sys
 
 from scs_airnow.cmd.cmd_aqcsv_mapper import CmdAQCSVMapper
 
 from scs_core.aqcsv.connector.datum_mapping import DatumMapping
 from scs_core.aqcsv.connector.mapping_task import MappingTaskList
-
-from scs_core.csv.csv_writer import CSVWriter
 
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONify
@@ -46,8 +44,6 @@ from scs_host.sys.host import Host
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-
-    writer = None
 
     document_count = 0
 
@@ -76,8 +72,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        exclude_header = not cmd.header
-
         # MappingTask...
         tasks = MappingTaskList.load(Host)
         task = tasks.item((cmd.task_org, cmd.task_group, int(cmd.task_loc), cmd.task_topic))
@@ -89,15 +83,6 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("aqcsv_mapper: %s" % task, file=sys.stderr)
             sys.stderr.flush()
-
-        # CSVWriter...
-        if cmd.dir is not None:
-            filename = os.path.join(cmd.dir, task.filename('csv'))
-            writer = CSVWriter(filename=filename, exclude_header=exclude_header)
-
-            if cmd.verbose:
-                print("aqcsv_mapper: %s" % writer, file=sys.stderr)
-                sys.stderr.flush()
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -115,11 +100,7 @@ if __name__ == '__main__':
                 record = mapping.aqcsv_record(datum)
                 jstr = JSONify.dumps(record)
 
-                if writer is None:
-                    print(jstr)
-
-                else:
-                    writer.write(jstr)
+                print(jstr)
 
             sys.stdout.flush()
 
@@ -132,8 +113,5 @@ if __name__ == '__main__':
             print("aqcsv_mapper: KeyboardInterrupt", file=sys.stderr)
 
     finally:
-        if writer is not None:
-            writer.close()
-
         if cmd.verbose:
             print("aqcsv_mapper: documents: %d" % document_count, file=sys.stderr)

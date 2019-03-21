@@ -5,6 +5,8 @@ Created on 13 March 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_airnow
+
 DESCRIPTION
 The aqcsv_task_manager utility is used to
 
@@ -25,7 +27,8 @@ DOCUMENT EXAMPLE
 "latest-rec": "2019-03-13T12:45:00Z"}}}
 
 SEE ALSO
-scs_airnow/aqcsv_mapper
+scs_analysis/aqcsv_mapper
+scs_analysis/aqcsv_task_manager
 """
 
 import sys

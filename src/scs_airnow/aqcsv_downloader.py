@@ -5,7 +5,7 @@ Created on 14 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-source repo: scs_analysis
+source repo: scs_airnow
 
 DESCRIPTION
 The aqcsv_downloader utility is used to
@@ -20,10 +20,10 @@ FILES
 ~/SCS/aws/aqcsv_downloader.json
 
 DOCUMENT EXAMPLE
-{"endpoint": "aws.southcoastscience.com", "api-key": "de92c5ff-b47a-4cc4-a04c-62d684d64a1f"}
 
 SEE ALSO
-scs_analysis/aws_topic_history
+scs_analysis/aqcsv_mapper
+scs_analysis/aqcsv_task_manager
 """
 
 import json
@@ -35,13 +35,15 @@ from subprocess import check_output, Popen, PIPE
 from scs_airnow.cmd.cmd_aqcsv_downloader import CmdAQCSVDownloader
 
 from scs_core.aqcsv.connector.mapping_task import MappingTaskList
+
 from scs_core.aws.data.byline import Byline
+
+from scs_core.data.datum import Datum
+
 from scs_core.sys.filesystem import Filesystem
 
 from scs_host.sys.host import Host
 
-
-# TODO: validation - check loc is int
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -58,6 +60,10 @@ if __name__ == '__main__':
 
     if not cmd.is_valid_end():
         print("aqcsv_downloader: invalid format for end datetime.", file=sys.stderr)
+        exit(2)
+
+    if not Datum.is_numeric(cmd.task_loc):
+        print("aqcsv_downloader: the loc value %s should be an integer." % cmd.task_loc, file=sys.stderr)
         exit(2)
 
     if not cmd.is_valid():
