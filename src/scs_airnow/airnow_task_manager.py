@@ -36,7 +36,7 @@ import sys
 from scs_airnow.cmd.cmd_airnow_task_manager import CmdAirNowTaskManager
 
 from scs_core.aqcsv.connector.datum_mapping import DatumMapping
-from scs_core.aqcsv.connector.mapping_task import MappingTask, MappingTaskList
+from scs_core.aqcsv.connector.airnow_mapping_task import MappingTask, AirNowMappingTaskList
 
 from scs_core.data.checkpoint_generator import CheckpointGenerator
 from scs_core.data.datum import Datum
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     # resources...
 
     # APIAuth...
-    tasks = MappingTaskList.load(Host)
+    tasks = AirNowMappingTaskList.load(Host)
 
 
     # ----------------------------------------------------------------------------------------------------------------

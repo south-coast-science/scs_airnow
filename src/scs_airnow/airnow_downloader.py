@@ -34,7 +34,7 @@ from subprocess import check_output, Popen, PIPE
 
 from scs_airnow.cmd.cmd_airnow_downloader import CmdAirNowDownloader
 
-from scs_core.aqcsv.connector.mapping_task import MappingTaskList
+from scs_core.aqcsv.connector.airnow_mapping_task import AirNowMappingTaskList
 
 from scs_core.aws.data.byline import Byline
 
@@ -82,7 +82,7 @@ if __name__ == '__main__':
         # resources...
 
         # MappingTask...
-        tasks = MappingTaskList.load(Host)
+        tasks = AirNowMappingTaskList.load(Host)
         task = tasks.item((cmd.task_org, cmd.task_group, int(cmd.task_loc), cmd.task_topic))
 
         if task is None:

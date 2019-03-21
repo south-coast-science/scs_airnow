@@ -32,7 +32,7 @@ import sys
 from scs_airnow.cmd.cmd_airnow_mapper import CmdAirNowMapper
 
 from scs_core.aqcsv.connector.datum_mapping import DatumMapping
-from scs_core.aqcsv.connector.mapping_task import MappingTaskList
+from scs_core.aqcsv.connector.airnow_mapping_task import AirNowMappingTaskList
 
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONify
@@ -73,7 +73,7 @@ if __name__ == '__main__':
         # resources...
 
         # MappingTask...
-        tasks = MappingTaskList.load(Host)
+        tasks = AirNowMappingTaskList.load(Host)
         task = tasks.item((cmd.task_org, cmd.task_group, int(cmd.task_loc), cmd.task_topic))
 
         if task is None:
