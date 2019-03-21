@@ -32,7 +32,7 @@ import sys
 
 from subprocess import check_output, Popen, PIPE
 
-from scs_airnow.cmd.cmd_aqcsv_downloader import CmdAQCSVDownloader
+from scs_airnow.cmd.cmd_airnow_downloader import CmdAirNowDownloader
 
 from scs_core.aqcsv.connector.mapping_task import MappingTaskList
 
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdAQCSVDownloader()
+    cmd = CmdAirNowDownloader()
 
     if not cmd.is_valid_start():
         print("aqcsv_downloader: invalid format for start datetime.", file=sys.stderr)

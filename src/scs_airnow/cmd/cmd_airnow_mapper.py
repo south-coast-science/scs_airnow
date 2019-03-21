@@ -9,7 +9,7 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdAQCSVMapper(object):
+class CmdAirNowMapper(object):
     """unix command line handler"""
 
     def __init__(self):
@@ -72,4 +72,4 @@ class CmdAQCSVMapper(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdAQCSVMapper:{task:%s, verbose:%s}" % (self.__opts.task, self.verbose)
+        return "CmdAirNowMapper:{task:%s, verbose:%s}" % (self.__opts.task, self.verbose)

@@ -29,7 +29,7 @@ scs_analysis/aqcsv_task_manager
 
 import sys
 
-from scs_airnow.cmd.cmd_aqcsv_mapper import CmdAQCSVMapper
+from scs_airnow.cmd.cmd_airnow_mapper import CmdAirNowMapper
 
 from scs_core.aqcsv.connector.datum_mapping import DatumMapping
 from scs_core.aqcsv.connector.mapping_task import MappingTaskList
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdAQCSVMapper()
+    cmd = CmdAirNowMapper()
 
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)

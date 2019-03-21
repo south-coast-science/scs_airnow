@@ -11,7 +11,7 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdAQCSVDownloader(object):
+class CmdAirNowDownloader(object):
     """unix command line handler"""
 
     def __init__(self):
@@ -115,5 +115,5 @@ class CmdAQCSVDownloader(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdAQCSVDownloader:{task:%s, start:%s, end:%s, dir:%s, file_prefix:%s, verbose:%s}" % \
+        return "CmdAirNowDownloader:{task:%s, start:%s, end:%s, dir:%s, file_prefix:%s, verbose:%s}" % \
                (self.__opts.task, self.start, self.end, self.dir, self.file_prefix, self.verbose)

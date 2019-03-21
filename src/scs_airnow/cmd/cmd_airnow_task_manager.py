@@ -11,7 +11,7 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdAQCSVTaskManager(object):
+class CmdAirNowTaskManager(object):
     """unix command line handler"""
 
     def __init__(self):
@@ -141,5 +141,5 @@ class CmdAQCSVTaskManager(object):
     def __str__(self, *args, **kwargs):
         settings = self.__args if self.__opts.set else None
 
-        return "CmdAQCSVTaskManager:{list:%s, set:%s, code:%s, delete:%s, verbose:%s}" % \
+        return "CmdAirNowTaskManager:{list:%s, set:%s, code:%s, delete:%s, verbose:%s}" % \
                (self.list, settings, self.code, self.__opts.delete, self.verbose)
