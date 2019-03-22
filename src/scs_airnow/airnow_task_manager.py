@@ -11,7 +11,8 @@ DESCRIPTION
 The airnow_task_manager utility is used to
 
 SYNOPSIS
-airnow_task_manager.py [{ -l | -s [-c CODE] ORG GROUP LOC TOPIC DEVICE CHECKPOINT P1..PN | -d ORG GROUP LOC TOPIC }] [-v]
+airnow_task_manager.py [{ -l | -s [-c CODE] ORG GROUP LOC TOPIC DEVICE CHECKPOINT P1..PN | -d ORG GROUP LOC TOPIC }]
+[-v]
 
 EXAMPLES
 ./airnow_task_manager.py -v -s -c 321MM987654321 scs demo 1 particulates praxis-000401 **:/01:00 val.pm1 val.pm2p5

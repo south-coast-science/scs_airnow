@@ -19,7 +19,7 @@ class CmdAirNowDownloader(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog -t ORG GROUP LOC TOPIC -s START -e END [-d DIR] "
-                                                    "[-f FILE_PREFIX] [-v]", version="%prog 1.0")
+                                                    "[-f FILE_PREFIX] [-c] [-v]", version="%prog 1.0")
 
         # compulsory...
         self.__parser.add_option("--task", "-t", type="string", nargs=4, action="store", dest="task",
@@ -37,6 +37,9 @@ class CmdAirNowDownloader(object):
 
         self.__parser.add_option("--file-prefix", "-f", type="string", nargs=1, action="store", dest="file_prefix",
                                  help="use the specified file prefix (instead of auto-generated)")
+
+        self.__parser.add_option("--check-availability", "-c", action="store_true", dest="check", default=False,
+                                 help="check availability of data before proceeding")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -104,6 +107,11 @@ class CmdAirNowDownloader(object):
 
 
     @property
+    def check(self):
+        return self.__opts.check
+
+
+    @property
     def verbose(self):
         return self.__opts.verbose
 
@@ -115,5 +123,5 @@ class CmdAirNowDownloader(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdAirNowDownloader:{task:%s, start:%s, end:%s, dir:%s, file_prefix:%s, verbose:%s}" % \
-               (self.__opts.task, self.start, self.end, self.dir, self.file_prefix, self.verbose)
+        return "CmdAirNowDownloader:{task:%s, start:%s, end:%s, dir:%s, file_prefix:%s, check:%s, verbose:%s}" % \
+               (self.__opts.task, self.start, self.end, self.dir, self.file_prefix, self.check, self.verbose)

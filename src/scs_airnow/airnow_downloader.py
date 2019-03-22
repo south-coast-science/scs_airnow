@@ -25,7 +25,7 @@ import json
 import os
 import sys
 
-from subprocess import check_output, Popen, PIPE
+from subprocess import check_output, CalledProcessError, Popen, PIPE
 
 from scs_airnow.cmd.cmd_airnow_downloader import CmdAirNowDownloader
 
@@ -97,18 +97,25 @@ if __name__ == '__main__':
         end = cmd.end.as_iso8601()
 
         # available data...
-        if cmd.verbose:
-            print("checking for availability...", file=sys.stderr)
+        if cmd.check:
+            if cmd.verbose:
+                print("airnow_task: checking availability...", file=sys.stderr)
 
-        args = ['aws_byline.py', '-l', '-t', task.environment_path()]
-        jstr = check_output(args + verbose).decode().strip()
+            args = ['./aws_byline.py', '-l', '-t', task.environment_path()]
 
-        byline = Byline.construct_from_jdict(json.loads(jstr))
+            try:
+                jstr = check_output(args).decode().strip()
+            except CalledProcessError as ex:
+                print("airnow_task: availability check failed with exit code %s." % ex.returncode, file=sys.stderr)
+                exit(ex.returncode)
+                jstr = None
 
-        if byline.rec < cmd.end:
-            print("airnow_downloader: latest report (%s) is earlier than the requested end." % byline.rec.as_iso8601(),
-                  file=sys.stderr)
-            exit(1)
+            byline = Byline.construct_from_jdict(json.loads(jstr))
+
+            if byline.rec < cmd.end:
+                print("airnow_task: latest report (%s) is earlier than the requested end." % byline.rec.as_iso8601(),
+                      file=sys.stderr)
+                exit(1)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -116,13 +123,14 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print("-", file=sys.stderr)
-            print("making directories...", file=sys.stderr)
+            print("airnow_downloader: making directories...", file=sys.stderr)
 
         dir_name =  task.site_code if cmd.dir is None else os.path.join(cmd.dir, task.site_code)
 
         Filesystem.mkdir(dir_name)
 
-        file_prefix = task.filename() if cmd.file_prefix is None else cmd.file_prefix
+        task_prefix = task.file_prefix()
+        file_prefix = task_prefix if cmd.file_prefix is None else cmd.file_prefix
         file_path = os.path.join(dir_name, file_prefix)
 
 
@@ -133,21 +141,24 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print("-", file=sys.stderr)
-            print("downloading %s data..." % task.topic, file=sys.stderr)
+            print("airnow_downloader: downloading %s data..." % task.topic, file=sys.stderr)
 
-        args = ['aws_topic_history.py', task.environment_path(), '-s', start, '-e', end]
+        args = ['./aws_topic_history.py', task.environment_path(), '-s', start, '-e', end]
         sp1 = Popen(args + verbose, stdout=PIPE)
 
-        args = ['node.py', 'rec', 'tag', 'src'] + ['val.' + param for param in task.parameters]
+        args = ['./node.py', 'rec', 'tag', 'src'] + ['val.' + param for param in task.parameters]
         sp2 = Popen(args + verbose, stdin=sp1.stdout, stdout=PIPE)
 
-        args = ['sample_aggregate.py', '-c', task.checkpoint]
+        args = ['./sample_aggregate.py', '-c', task.checkpoint]
         sp3 = Popen(args + verbose, stdin=sp2.stdout, stdout=PIPE)
 
-        args = ['csv_writer.py', env_filename]
+        args = ['./csv_writer.py', env_filename]
         sp4 = Popen(args, stdin=sp3.stdout)
 
         sp4.wait()
+
+        if sp4.returncode > 0:
+            exit(sp4.returncode)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -157,21 +168,24 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print("-", file=sys.stderr)
-            print("downloading status data...", file=sys.stderr)
+            print("airnow_downloader: downloading status data...", file=sys.stderr)
 
-        args = ['aws_topic_history.py', task.status_path(), '-s', start, '-e', end]
+        args = ['./aws_topic_history.py', task.status_path(), '-s', start, '-e', end]
         sp1 = Popen(args + verbose, stdout=PIPE)
 
-        args = ['node.py', 'rec', 'tag', 'val.tz', 'val.sch', 'val.gps', 'val.airnow']
+        args = ['./node.py', 'rec', 'tag', 'val.tz', 'val.sch', 'val.gps', 'val.airnow']
         sp2 = Popen(args + verbose, stdin=sp1.stdout, stdout=PIPE)
 
-        args = ['sample_aggregate.py', '-c', task.checkpoint]
+        args = ['./sample_aggregate.py', '-c', task.checkpoint]
         sp3 = Popen(args + verbose, stdin=sp2.stdout, stdout=PIPE)
 
-        args = ['csv_writer.py', status_filename]
+        args = ['./csv_writer.py', status_filename]
         sp4 = Popen(args, stdin=sp3.stdout)
 
         sp4.wait()
+
+        if sp4.returncode > 0:
+            exit(sp4.returncode)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -181,15 +195,18 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print("-", file=sys.stderr)
-            print("joining data...", file=sys.stderr)
+            print("airnow_downloader: joining...", file=sys.stderr)
 
-        args = ['csv_join.py', '-i', '-l', task.topic, 'rec', env_filename, '-r', 'status', 'rec', status_filename]
+        args = ['./csv_join.py', '-i', '-l', task.topic, 'rec', env_filename, '-r', 'status', 'rec', status_filename]
         sp1 = Popen(args + verbose, stdout=PIPE)
 
-        args = ['csv_writer.py', joined_filename]
+        args = ['./csv_writer.py', joined_filename]
         sp2 = Popen(args, stdin=sp1.stdout)
 
         sp2.wait()
+
+        if sp2.returncode > 0:
+            exit(sp2.returncode)
 
 
     # ----------------------------------------------------------------------------------------------------------------
