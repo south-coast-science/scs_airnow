@@ -17,7 +17,9 @@ EXAMPLES
 ./airnow_task.py -t unep ethiopia 1 particulates -s 2019-03-20T00:00:00Z -e 2019-03-21T00:00:00Z -d data -v
 
 SEE ALSO
+scs_analysis/airnow_downloader
 scs_analysis/aqcsv_mapper
+scs_analysis/airnow_uploader
 scs_analysis/aqcsv_task_manager
 """
 
@@ -110,7 +112,8 @@ if __name__ == '__main__':
         # available data...
         if cmd.check:
             if cmd.verbose:
-                print("airnow_task: checking data availability...", file=sys.stderr)
+                print("airnow_task: checking data availability...", end='', file=sys.stderr)
+                sys.stderr.flush()
 
             args = ['./aws_byline.py', '-l', '-t', task.environment_path()]
 
@@ -128,12 +131,16 @@ if __name__ == '__main__':
                       file=sys.stderr)
                 exit(1)
 
+            if cmd.verbose:
+                print("done.", file=sys.stderr)
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run: download...
 
         if cmd.verbose:
-            print("airnow_task: downloading...", file=sys.stderr)
+            print("airnow_task: downloading...", end='', file=sys.stderr)
+            sys.stderr.flush()
 
         args = ['./airnow_downloader.py', '-t', cmd.org, cmd.group, cmd.loc, cmd.topic, '-s', start, '-e', end,
                 '-d', cmd.dir, '-f', task_prefix]
@@ -146,12 +153,16 @@ if __name__ == '__main__':
             print("airnow_task: download failed with exit code %s." % sp1.returncode, file=sys.stderr)
             exit(sp1.returncode)
 
+        if cmd.verbose:
+            print("done.", file=sys.stderr)
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run: mapping...
 
         if cmd.verbose:
-            print("airnow_task: mapping...", file=sys.stderr)
+            print("airnow_task: mapping...", end='', file=sys.stderr)
+            sys.stderr.flush()
 
         args = ['./csv_reader.py', joined_filename]
         sp1 = Popen(args, stdout=PIPE)
@@ -168,12 +179,16 @@ if __name__ == '__main__':
             print("airnow_task: mapping failed with exit code %s." % sp3.returncode, file=sys.stderr)
             exit(sp3.returncode)
 
+        if cmd.verbose:
+            print("done.", file=sys.stderr)
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run: upload...
 
         if cmd.verbose:
-            print("airnow_task: uploading...", file=sys.stderr)
+            print("airnow_task: uploading...", end='', file=sys.stderr)
+            sys.stderr.flush()
 
         args = ['./airnow_uploader.py', mapped_filename]
         sp1 = Popen(args)
@@ -184,22 +199,30 @@ if __name__ == '__main__':
             print("airnow_task: upload failed with exit code %s." % sp1.returncode, file=sys.stderr)
             exit(sp1.returncode)
 
+        if cmd.verbose:
+            print("done.", file=sys.stderr)
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run: update task record...
 
         if cmd.verbose:
-            print("airnow_task: updating task latest-rec to %s..." % cmd.end.as_iso8601(), file=sys.stderr)
+            print("airnow_task: updating task latest-rec to %s..." % cmd.end.as_iso8601(), end='', file=sys.stderr)
+            sys.stderr.flush()
 
         task.latest_rec = cmd.end
         tasks.save(Host)
+
+        if cmd.verbose:
+            print("done.", file=sys.stderr)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run: delete files...
 
         if cmd.verbose:
-            print("airnow_task: deleting temporary files...", file=sys.stderr)
+            print("airnow_task: deleting temporary files...", end='', file=sys.stderr)
+            sys.stderr.flush()
 
         args = ['rm'] + glob(file_prefix + '*')
         sp1 = Popen(args)
@@ -211,7 +234,7 @@ if __name__ == '__main__':
             exit(sp1.returncode)
 
         if cmd.verbose:
-            print("airnow_task: done.", file=sys.stderr)
+            print("done.", file=sys.stderr)
 
 
     # ----------------------------------------------------------------------------------------------------------------
