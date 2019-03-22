@@ -99,7 +99,7 @@ if __name__ == '__main__':
         # available data...
         if cmd.check:
             if cmd.verbose:
-                print("airnow_task: checking availability...", file=sys.stderr)
+                print("airnow_task: checking data availability...", file=sys.stderr)
 
             args = ['./aws_byline.py', '-l', '-t', task.environment_path()]
 

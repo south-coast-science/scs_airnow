@@ -25,6 +25,7 @@ import json
 import os
 import sys
 
+from glob import glob
 from subprocess import check_output, CalledProcessError, Popen, PIPE
 
 from scs_airnow.cmd.cmd_airnow_task import CmdAirNowTask
@@ -37,6 +38,8 @@ from scs_core.data.datum import Datum
 
 from scs_host.sys.host import Host
 
+
+# TODO: delete temporary files on failure
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -84,12 +87,13 @@ if __name__ == '__main__':
             print("airnow_task: %s" % task, file=sys.stderr)
             sys.stderr.flush()
 
+        # files...
         task_prefix = task.file_prefix()
         dir_name =  task.site_code if cmd.dir is None else os.path.join(cmd.dir, task.site_code)
         file_prefix = os.path.join(dir_name, task_prefix)
 
         if cmd.verbose:
-            print("airnow_task: file_prefix: %s" % file_prefix, file=sys.stderr)
+            print("airnow_task: temporary file group: %s" % file_prefix, file=sys.stderr)
             sys.stderr.flush()
 
         joined_filename = file_prefix + '-joined.csv'
@@ -106,7 +110,7 @@ if __name__ == '__main__':
         # available data...
         if cmd.check:
             if cmd.verbose:
-                print("airnow_task: checking availability...", file=sys.stderr)
+                print("airnow_task: checking data availability...", file=sys.stderr)
 
             args = ['./aws_byline.py', '-l', '-t', task.environment_path()]
 
@@ -171,7 +175,7 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("airnow_task: uploading...", file=sys.stderr)
 
-        args = ['./airnow_uploader.py', '-v', mapped_filename]
+        args = ['./airnow_uploader.py', mapped_filename]
         sp1 = Popen(args)
 
         sp1.wait()
@@ -184,12 +188,30 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run: update task record...
 
+        if cmd.verbose:
+            print("airnow_task: updating task latest-rec to %s..." % cmd.end.as_iso8601(), file=sys.stderr)
 
+        task.latest_rec = cmd.end
+        tasks.save(Host)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run: delete files...
 
+        if cmd.verbose:
+            print("airnow_task: deleting temporary files...", file=sys.stderr)
+
+        args = ['rm'] + glob(file_prefix + '*')
+        sp1 = Popen(args)
+
+        sp1.wait()
+
+        if sp1.returncode > 0:
+            print("airnow_task: delete failed with exit code %s." % sp1.returncode, file=sys.stderr)
+            exit(sp1.returncode)
+
+        if cmd.verbose:
+            print("airnow_task: done.", file=sys.stderr)
 
 
     # ----------------------------------------------------------------------------------------------------------------
