@@ -92,14 +92,14 @@ if __name__ == '__main__':
         # files...
         task_prefix = task.file_prefix()
         dir_name =  task.site_code if cmd.dir is None else os.path.join(cmd.dir, task.site_code)
-        file_prefix = os.path.join(dir_name, task_prefix)
+        file_path = os.path.join(dir_name, task_prefix)
 
         if cmd.verbose:
-            print("airnow_task: temporary file group: %s" % file_prefix, file=sys.stderr)
+            print("airnow_task: temporary file group: %s" % file_path, file=sys.stderr)
             sys.stderr.flush()
 
-        joined_filename = file_prefix + '-joined.csv'
-        mapped_filename = file_prefix + '.csv'
+        joined_filename = file_path + '-joined.csv'
+        mapped_filename = file_path + '.csv'
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -224,14 +224,17 @@ if __name__ == '__main__':
             print("airnow_task: deleting temporary files...", end='', file=sys.stderr)
             sys.stderr.flush()
 
-        args = ['rm'] + glob(file_prefix + '*')
-        sp1 = Popen(args)
+        files = glob(file_path + '*')
 
-        sp1.wait()
+        if files:
+            args = ['rm'] + files
+            sp1 = Popen(args)
 
-        if sp1.returncode > 0:
-            print("airnow_task: delete failed with exit code %s." % sp1.returncode, file=sys.stderr)
-            exit(sp1.returncode)
+            sp1.wait()
+
+            if sp1.returncode > 0:
+                print("airnow_task: delete failed with exit code %s." % sp1.returncode, file=sys.stderr)
+                exit(sp1.returncode)
 
         if cmd.verbose:
             print("done.", file=sys.stderr)
