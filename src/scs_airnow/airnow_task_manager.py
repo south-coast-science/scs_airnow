@@ -23,9 +23,8 @@ FILES
 DOCUMENT EXAMPLE
 {"tasks": {"('south-coast-science-demo', 'brighton', 1, 'particulates')": {"org": "south-coast-science-demo",
 "group": "brighton", "loc": 1, "topic": "particulates", "device": "praxis-000401",
-"parameters": ["val.pm1", "val.pm2p5", "val.pm10"], "checkpoint": "**:/01:00",
-"site-code": "123MM123456789", "pocs": {"88101": 2, "85101": 3},
-"latest-rec": "2019-03-13T12:45:00Z"}}}
+"parameters": ["pm1", "pm2p5", "pm10"], "checkpoint": "**:/01:00", "agency-code": "SSSSSSSSSS",
+"site-code": "123MM123456789", "pocs": {}, "upload-start": "2019-02-01T00:00:00Z", "upload-end": null}}}
 
 SEE ALSO
 scs_analysis/aqcsv_mapper
@@ -100,10 +99,9 @@ if __name__ == '__main__':
                   file=sys.stderr)
             exit(2)
 
-        site_code = None if cmd.code is None else cmd.code
-
         task = MappingTask(cmd.set_org, cmd.set_group, cmd.set_loc, cmd.set_topic, cmd.set_device,
-                           cmd.set_parameters, cmd.set_checkpoint, site_code, {}, cmd.set_upload_start, None)
+                           cmd.set_parameters, cmd.set_checkpoint, cmd.agency_code, cmd.site_code, {},
+                           cmd.set_upload_start, None)
 
         tasks.insert(task)
         tasks.save(Host)

@@ -99,7 +99,7 @@ if __name__ == '__main__':
             sys.stderr.flush()
 
         joined_filename = file_path + '-joined.csv'
-        mapped_filename = file_path + '.csv'
+        mapped_filename = file_path + '.' + task.agency_code
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -170,7 +170,7 @@ if __name__ == '__main__':
         args = ['./airnow_mapper.py', '-t', cmd.org, cmd.group, cmd.loc, cmd.topic]
         sp2 = Popen(args, stdin=sp1.stdout, stdout=PIPE)
 
-        args = ['./csv_writer.py', mapped_filename]
+        args = ['./csv_writer.py', '-x', mapped_filename]
         sp3 = Popen(args, stdin=sp2.stdout)
 
         sp3.wait()
@@ -207,7 +207,7 @@ if __name__ == '__main__':
         # run: update task record...
 
         if cmd.verbose:
-            print("airnow_task: updating task upload_end to %s..." % cmd.end.as_iso8601(), end='', file=sys.stderr)
+            print("airnow_task: updating task upload-end to %s..." % cmd.end.as_iso8601(), end='', file=sys.stderr)
             sys.stderr.flush()
 
         task.upload_end = cmd.end

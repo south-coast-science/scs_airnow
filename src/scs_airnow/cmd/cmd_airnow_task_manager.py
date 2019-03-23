@@ -18,8 +18,9 @@ class CmdAirNowTaskManager(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-v] [{ -l | -s [-c CODE] ORG GROUP LOC TOPIC DEVICE "
-                                                    "CHECKPOINT UPLOAD_START P1..PN | -d ORG GROUP LOC TOPIC }]",
+        self.__parser = optparse.OptionParser(usage="%prog [-v] [{ -l | -s [-c SITE_CODE AGENCY_CODE] ORG GROUP LOC "
+                                                    "TOPIC DEVICE CHECKPOINT UPLOAD_START P1..PN | "
+                                                    "-d ORG GROUP LOC TOPIC }]",
                                               version="%prog 1.0")
 
         # optional...
@@ -29,8 +30,8 @@ class CmdAirNowTaskManager(object):
         self.__parser.add_option("--set", "-s", action="store_true", dest="set", default=False,
                                  help="set a task")
 
-        self.__parser.add_option("--site-code", "-c", type="string", nargs=1, action="store", dest="code",
-                                 help="specify a site code (when setting a task)")
+        self.__parser.add_option("--codes", "-c", type="string", nargs=2, action="store", dest="codes",
+                                 help="specify an agency code and site code (when setting a task)")
 
         self.__parser.add_option("--delete", "-d", type="string", nargs=4, action="store", dest="delete",
                                  help="delete a task")
@@ -109,8 +110,13 @@ class CmdAirNowTaskManager(object):
 
 
     @property
-    def code(self):
-        return self.__opts.code
+    def agency_code(self):
+        return None if not self.__opts.codes else self.__opts.codes[0]
+
+
+    @property
+    def site_code(self):
+        return None if not self.__opts.codes else self.__opts.codes[1]
 
 
     @property
@@ -147,5 +153,5 @@ class CmdAirNowTaskManager(object):
     def __str__(self, *args, **kwargs):
         settings = self.__args if self.__opts.set else None
 
-        return "CmdAirNowTaskManager:{list:%s, set:%s, code:%s, delete:%s, verbose:%s}" % \
-               (self.list, settings, self.code, self.__opts.delete, self.verbose)
+        return "CmdAirNowTaskManager:{list:%s, set:%s, codes:%s, delete:%s, verbose:%s}" % \
+               (self.list, settings, self.__opts.codes, self.__opts.delete, self.verbose)
