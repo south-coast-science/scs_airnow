@@ -11,8 +11,8 @@ DESCRIPTION
 The airnow_task_manager utility is used to
 
 SYNOPSIS
-airnow_task_manager.py [{ -l | -s [-c CODE] ORG GROUP LOC TOPIC DEVICE CHECKPOINT P1..PN | -d ORG GROUP LOC TOPIC }]
-[-v]
+airnow_task_manager.py [-v] [{ -l | -s [-c CODE] ORG GROUP LOC TOPIC DEVICE CHECKPOINT UPLOAD_START P1..PN |
+-d ORG GROUP LOC TOPIC }]
 
 EXAMPLES
 ./airnow_task_manager.py -v -s -c 321MM987654321 scs demo 1 particulates praxis-000401 **:/01:00 val.pm1 val.pm2p5
@@ -103,7 +103,7 @@ if __name__ == '__main__':
         site_code = None if cmd.code is None else cmd.code
 
         task = MappingTask(cmd.set_org, cmd.set_group, cmd.set_loc, cmd.set_topic, cmd.set_device,
-                           cmd.set_parameters, cmd.set_checkpoint, site_code, {}, None)
+                           cmd.set_parameters, cmd.set_checkpoint, site_code, {}, cmd.set_upload_start, None)
 
         tasks.insert(task)
         tasks.save(Host)

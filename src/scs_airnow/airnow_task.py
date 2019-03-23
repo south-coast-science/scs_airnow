@@ -207,10 +207,10 @@ if __name__ == '__main__':
         # run: update task record...
 
         if cmd.verbose:
-            print("airnow_task: updating task latest-rec to %s..." % cmd.end.as_iso8601(), end='', file=sys.stderr)
+            print("airnow_task: updating task upload_end to %s..." % cmd.end.as_iso8601(), end='', file=sys.stderr)
             sys.stderr.flush()
 
-        task.latest_rec = cmd.end
+        task.upload_end = cmd.end
         tasks.save(Host)
 
         if cmd.verbose:
