@@ -21,17 +21,15 @@ scs_analysis/aqcsv_mapper
 scs_analysis/aqcsv_task_manager
 """
 
-import json
 import os
 import sys
 
-from subprocess import check_output, CalledProcessError, Popen, PIPE
+from subprocess import Popen, PIPE
 
 from scs_airnow.cmd.cmd_airnow_downloader import CmdAirNowDownloader
+from scs_airnow.helper.airnow_availability import AirNowAvailability
 
 from scs_core.aqcsv.connector.airnow_mapping_task import AirNowMappingTaskList
-
-from scs_core.aws.data.byline import Byline
 
 from scs_core.data.datum import Datum
 
@@ -105,31 +103,12 @@ if __name__ == '__main__':
         start = cmd.start.as_iso8601()
         end = cmd.end.as_iso8601()
 
-        # available data...
+        # data availability...
         if cmd.check:
-            if cmd.verbose:
-                print("airnow_downloader: checking data availability...", end='', file=sys.stderr)
-                sys.stderr.flush()
+            result = AirNowAvailability.check("airnow_downloader", task, cmd.end, cmd.verbose)
 
-            args = ['./aws_byline.py', '-l', '-t', task.environment_path()]
-
-            try:
-                jstr = check_output(args).decode().strip()
-            except CalledProcessError as ex:
-                print("airnow_downloader: availability check failed with exit code %s." % ex.returncode,
-                      file=sys.stderr)
-                exit(ex.returncode)
-                jstr = None
-
-            byline = Byline.construct_from_jdict(json.loads(jstr))
-
-            if byline.rec < cmd.end:
-                print("airnow_downloader: latest report (%s) is earlier than the requested end." %
-                      byline.rec.as_iso8601(), file=sys.stderr)
-                exit(1)
-
-            if cmd.verbose:
-                print("done.", file=sys.stderr)
+            if result != AirNowAvailability.OK:
+                exit(result)
 
 
         # ------------------------------------------------------------------------------------------------------------

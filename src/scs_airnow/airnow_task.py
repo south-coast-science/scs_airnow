@@ -23,18 +23,16 @@ scs_analysis/airnow_uploader
 scs_analysis/aqcsv_task_manager
 """
 
-import json
 import os
 import sys
 
 from glob import glob
-from subprocess import check_output, CalledProcessError, Popen, PIPE
+from subprocess import Popen, PIPE
 
 from scs_airnow.cmd.cmd_airnow_task import CmdAirNowTask
+from scs_airnow.helper.airnow_availability import AirNowAvailability
 
 from scs_core.aqcsv.connector.airnow_mapping_task import AirNowMappingTaskList
-
-from scs_core.aws.data.byline import Byline
 
 from scs_core.data.datum import Datum
 
@@ -52,6 +50,10 @@ if __name__ == '__main__':
 
     cmd = CmdAirNowTask()
 
+    if not cmd.is_valid():
+        cmd.print_help(sys.stderr)
+        exit(2)
+
     if not cmd.is_valid_start():
         print("airnow_task: invalid format for start datetime.", file=sys.stderr)
         exit(2)
@@ -62,10 +64,6 @@ if __name__ == '__main__':
 
     if not Datum.is_numeric(cmd.loc):
         print("airnow_task: the loc value %s should be an integer." % cmd.loc, file=sys.stderr)
-        exit(2)
-
-    if not cmd.is_valid():
-        cmd.print_help(sys.stderr)
         exit(2)
 
     if cmd.verbose:
@@ -109,30 +107,12 @@ if __name__ == '__main__':
         start = cmd.start.as_iso8601()
         end = cmd.end.as_iso8601()
 
-        # available data...
+        # data availability...
         if cmd.check:
-            if cmd.verbose:
-                print("airnow_task: checking data availability...", end='', file=sys.stderr)
-                sys.stderr.flush()
+            result = AirNowAvailability.check("airnow_task", task, cmd.end, cmd.verbose)
 
-            args = ['./aws_byline.py', '-l', '-t', task.environment_path()]
-
-            try:
-                jstr = check_output(args).decode().strip()
-            except CalledProcessError as ex:
-                print("airnow_task: availability check failed with exit code %s." % ex.returncode, file=sys.stderr)
-                exit(ex.returncode)
-                jstr = None
-
-            byline = Byline.construct_from_jdict(json.loads(jstr))
-
-            if byline.rec < cmd.end:
-                print("airnow_task: latest report (%s) is earlier than the requested end." % byline.rec.as_iso8601(),
-                      file=sys.stderr)
-                exit(1)
-
-            if cmd.verbose:
-                print("done.", file=sys.stderr)
+            if result != AirNowAvailability.OK:
+                exit(result)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -225,7 +205,7 @@ if __name__ == '__main__':
             sys.stderr.flush()
 
         files = glob(file_path + '*')
-
+        #
         if files:
             args = ['rm'] + files
             sp1 = Popen(args)
