@@ -97,7 +97,7 @@ if __name__ == '__main__':
             document_count += 1
 
             for mapping in task.mappings():
-                record = mapping.aqcsv_record(datum)
+                record = mapping.aqcsv_record(datum, task.duration)
                 jstr = JSONify.dumps(record)
 
                 print(jstr)

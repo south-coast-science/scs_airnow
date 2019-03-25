@@ -26,7 +26,6 @@ import sys
 from subprocess import Popen
 
 from scs_airnow.cmd.cmd_airnow_task_runner import CmdAirNowTaskRunner
-
 from scs_airnow.helper.airnow_availability import AirNowAvailability
 
 from scs_core.aqcsv.connector.airnow_mapping_task import AirNowMappingTaskList
@@ -55,6 +54,10 @@ if __name__ == '__main__':
         print("airnow_task_runner: invalid format for sample period.", file=sys.stderr)
         exit(2)
 
+    if not cmd.is_valid_end():
+        print("airnow_task_runner: invalid format for end datetime.", file=sys.stderr)
+        exit(2)
+
     if cmd.verbose:
         print("airnow_task_runner: %s" % cmd, file=sys.stderr)
         sys.stderr.flush()
@@ -70,7 +73,7 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        now = LocalizedDatetime.now()
+        now = LocalizedDatetime.now() if cmd.end is None else cmd.end
 
         # tasks...
         for task in tasks.items():
@@ -81,29 +84,29 @@ if __name__ == '__main__':
             # initialise...
             report_count = 0
 
-            start = task.upload_end if task.upload_end is not None else task.upload_start
-            end = start + cmd.sample_period
+            period_start = task.upload_end if task.upload_end is not None else task.upload_start
+            period_end = period_start + cmd.sample_period
 
             timer = IntervalTimer(60)                           # minute intervals give filename integrity
 
             # periods...
             while timer.true():
-                if end > now:
+                if period_end > now:
                     break
 
-                print("airnow_task_runner: start: %s end: %s..." % (start.as_iso8601(), end.as_iso8601()),
+                print("airnow_task_runner: start: %s end: %s..." % (period_start.as_iso8601(), period_end.as_iso8601()),
                       file=sys.stderr)
 
                 # data availability...
                 if cmd.check:
-                    result = AirNowAvailability.check("airnow_task_runner", task, end, cmd.verbose)
+                    result = AirNowAvailability.check("airnow_task_runner", task, period_end, cmd.verbose)
 
                     if result != AirNowAvailability.OK:         # no more data for this task
                         break
 
                 # task...
                 args = ['./airnow_task.py', '-v', '-t', task.org, task.group, str(task.loc), task.topic,
-                        '-s', start.as_iso8601(), '-e', end.as_iso8601(), '-d', cmd.dir]
+                        '-s', period_start.as_iso8601(), '-e', period_end.as_iso8601(), '-d', cmd.dir]
                 sp1 = Popen(args)
 
                 sp1.wait()
@@ -111,8 +114,8 @@ if __name__ == '__main__':
                 report_count += 1
 
                 # next...
-                start = end
-                end += cmd.sample_period
+                period_start = period_end
+                period_end += cmd.sample_period
 
                 print("-")
 

@@ -6,6 +6,7 @@ Created on 14 Mar 2019
 
 import optparse
 
+from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.data.timedelta import Timedelta
 
 
@@ -18,7 +19,8 @@ class CmdAirNowTaskRunner(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog -p [[DD-]HH:]MM -d DIR [-c] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog -p [[DD-]HH:]MM -d DIR [-e END] [-c] [-v]",
+                                              version="%prog 1.0")
 
         # compulsory...
         self.__parser.add_option("--sample-period", "-p", type="string", nargs=1, action="store", dest="sample_period",
@@ -28,6 +30,9 @@ class CmdAirNowTaskRunner(object):
                                  help="directory for temporary CSV files")
 
         # optional...
+        self.__parser.add_option("--end", "-e", type="string", nargs=1, action="store", dest="end",
+                                 help="ISO 8601 datetime reporting end")
+
         self.__parser.add_option("--check-availability", "-c", action="store_true", dest="check", default=False,
                                  help="stop processing topic when data is not available")
 
@@ -50,6 +55,10 @@ class CmdAirNowTaskRunner(object):
         return Timedelta.construct_from_flag(self.__opts.sample_period) is not None
 
 
+    def is_valid_end(self):
+        return LocalizedDatetime.construct_from_iso8601(self.__opts.end) is not None
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
@@ -60,6 +69,11 @@ class CmdAirNowTaskRunner(object):
     @property
     def dir(self):
         return self.__opts.dir
+
+
+    @property
+    def end(self):
+        return LocalizedDatetime.construct_from_iso8601(self.__opts.end)
 
 
     @property
@@ -79,5 +93,5 @@ class CmdAirNowTaskRunner(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdAirNowTaskRunner:{sample_period:%s, dir:%s, check:%s, verbose:%s}" %  \
-               (self.sample_period, self.dir, self.check, self.verbose)
+        return "CmdAirNowTaskRunner:{sample_period:%s, dir:%s, end:%s, check:%s, verbose:%s}" %  \
+               (self.sample_period, self.dir, self.end, self.check, self.verbose)

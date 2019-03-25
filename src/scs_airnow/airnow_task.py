@@ -39,8 +39,6 @@ from scs_core.data.datum import Datum
 from scs_host.sys.host import Host
 
 
-# TODO: delete temporary files on failure
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':

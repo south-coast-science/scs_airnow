@@ -12,10 +12,10 @@ The airnow_task_manager utility is used to
 
 SYNOPSIS
 airnow_task_manager.py [-v] [{ -l | -s [-c SITE_CODE AGENCY_CODE]
-ORG GROUP LOC TOPIC DEVICE CHECKPOINT UPLOAD_START P1..PN | -d ORG GROUP LOC TOPIC }]
+ORG GROUP LOC TOPIC DEVICE DURATION CHECKPOINT UPLOAD_START P1..PN | -d ORG GROUP LOC TOPIC }]
 
 EXAMPLES
-./airnow_task_manager.py -v -s -c AAA 321MM987654321 scs demo 1 particulates praxis-000401 **:/01:00 val.pm1 val.pm2p5
+./airnow_task_manager.py -v -s -c AAA 321MM987654321 scs demo 1 particulates praxis-000401 1c**:/01:00 val.pm1 val.pm2p5
 
 FILES
 ~/SCS/aws/aqcsv_mapping_tasks.json
@@ -23,7 +23,7 @@ FILES
 DOCUMENT EXAMPLE
 {"tasks": {"('south-coast-science-demo', 'brighton', 1, 'particulates')": {"org": "south-coast-science-demo",
 "group": "brighton", "loc": 1, "topic": "particulates", "device": "praxis-000401",
-"parameters": ["pm1", "pm2p5", "pm10"], "checkpoint": "**:/01:00", "agency-code": "AAA",
+"parameters": ["pm1", "pm2p5", "pm10"], "duration": 1, "checkpoint": "**:/01:00", "agency-code": "AAA",
 "site-code": "123MM123456789", "pocs": {}, "upload-start": "2019-02-01T00:00:00Z", "upload-end": null}}}
 
 SEE ALSO
@@ -100,7 +100,7 @@ if __name__ == '__main__':
             exit(2)
 
         task = MappingTask(cmd.set_org, cmd.set_group, cmd.set_loc, cmd.set_topic, cmd.set_device,
-                           cmd.set_parameters, cmd.set_checkpoint, cmd.agency_code, cmd.site_code, {},
+                           cmd.set_parameters, cmd.set_duration, cmd.set_checkpoint, cmd.agency_code, cmd.site_code, {},
                            cmd.set_upload_start, None)
 
         tasks.insert(task)

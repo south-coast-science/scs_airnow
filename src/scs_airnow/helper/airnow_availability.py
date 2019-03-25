@@ -41,6 +41,10 @@ class AirNowAvailability(object):
             print("availability check failed with exit code %s." % ex.returncode, file=sys.stderr)
             return ex.returncode
 
+        if not jstr:
+            print("no published data for %s." % task.environment_path(), file=sys.stderr)
+            return cls.NOT_AVAILABLE
+
         byline = Byline.construct_from_jdict(json.loads(jstr))
 
         # compare...

@@ -18,8 +18,8 @@ class CmdAirNowTaskManager(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-v] [{ -l | -s [-c SITE_CODE AGENCY_CODE] ORG GROUP LOC "
-                                                    "TOPIC DEVICE CHECKPOINT UPLOAD_START P1..PN | "
+        self.__parser = optparse.OptionParser(usage="%prog [-v] [{ -l | -s [-c AGENCY_CODE SITE_CODE] ORG GROUP LOC "
+                                                    "TOPIC DEVICE DURATION CHECKPOINT UPLOAD_START P1..PN | "
                                                     "-d ORG GROUP LOC TOPIC }]",
                                               version="%prog 1.0")
 
@@ -48,7 +48,7 @@ class CmdAirNowTaskManager(object):
         if self.list and (self.is_set() or self.is_delete()):
             return False
 
-        if self.is_set() and len(self.__args) < 8:
+        if self.is_set() and len(self.__args) < 9:
             return False
 
         return True
@@ -95,18 +95,23 @@ class CmdAirNowTaskManager(object):
 
 
     @property
-    def set_checkpoint(self):
+    def set_duration(self):
         return None if not self.__opts.set else self.__args[5]
 
 
     @property
-    def set_upload_start(self):
+    def set_checkpoint(self):
         return None if not self.__opts.set else self.__args[6]
 
 
     @property
+    def set_upload_start(self):
+        return None if not self.__opts.set else self.__args[7]
+
+
+    @property
     def set_parameters(self):
-        return None if not self.__opts.set else self.__args[6:]
+        return None if not self.__opts.set else self.__args[8:]
 
 
     @property
