@@ -11,7 +11,7 @@ DESCRIPTION
 The airnow_task_runner utility is used to
 
 SYNOPSIS
-airnow_task_runner.py -p [[DD-]HH:]MM -d DIR [-c] [-v]
+airnow_task_runner.py -p [[DD-]HH:]MM -d DIR [-e END] [-c] [-v]
 
 EXAMPLES
 
