@@ -13,6 +13,9 @@ The aqcsv_mapper utility is used to
 SYNOPSIS
 airnow_uploader.py [-v] LOCAL_FILENAME [REMOTE_FILENAME]
 
+EXAMPLES
+./airnow_uploader.py -v data/231000000000/201903252001_231.NRB
+
 FILES
 ~/SCS/conf/airnow_uploader_conf.json
 
@@ -29,6 +32,19 @@ from scs_core.aqcsv.conf.airnow_uploader_conf import AirNowUploaderConf
 
 from scs_host.client.sftp_client import SFTPClient
 from scs_host.sys.host import Host
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+def __listdir():
+    ls = client.listdir()
+
+    if cmd.verbose:
+        cwd = client.cwd()
+        path = '/' if cwd is None else cwd
+
+        print("airnow_uploader: %s: %s" % (path, ls), file=sys.stderr)
+        sys.stderr.flush()
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -69,17 +85,25 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        # connect...
         client = SFTPClient(conf.host)
-        client.connect(username=conf.username, password=conf.password, log=True)
-
-        if conf.remote_path:
-            client.chdir(conf.remote_path)
+        client.connect(username=conf.username, password=conf.password)
 
         if cmd.verbose:
             print("airnow_uploader: %s" % client, file=sys.stderr)
             sys.stderr.flush()
 
-        client.put(cmd.local_filename, remote_path=cmd.remote_filename, preserve_mtime=True)
+        __listdir()
+
+        # chdir...
+        for node in conf.remote_path.split('/'):
+            client.chdir(node)
+            __listdir()
+
+        # put...
+        client.put(cmd.local_filename)
+
+        __listdir()
 
 
     # ----------------------------------------------------------------------------------------------------------------

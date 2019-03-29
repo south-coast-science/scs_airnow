@@ -14,7 +14,7 @@ SYNOPSIS
 airnow_task_runner.py -p [[DD-]HH:]MM -d DIR [-e END] [-c] [-v]
 
 EXAMPLES
-
+./airnow_task_runner.py -p 1-00:00 -d data -e 2019-03-01T00:00:00Z -c -v
 
 SEE ALSO
 scs_analysis/airnow_task_manager
