@@ -1,9 +1,7 @@
 """
-Created on 25 Dec 2018
+Created on 14 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-source repo: scs_analysis
 """
 
 import optparse
@@ -11,26 +9,20 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdAWSByline(object):
+class CmdAirNowMapper(object):
     """unix command line handler"""
 
     def __init__(self):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -d DEVICE | -t TOPIC [-l] } [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog -t ORG GROUP LOC TOPIC [-v]", version="%prog 1.0")
 
         # compulsory...
-        self.__parser.add_option("--device", "-d", type="string", nargs=1, action="store", dest="device",
-                                 help="device tag")
-
-        self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic",
-                                 help="topic path")
+        self.__parser.add_option("--task", "-t", type="string", nargs=4, action="store", dest="task",
+                                 help="specify the task")
 
         # optional...
-        self.__parser.add_option("--latest", "-l", action="store_true", dest="latest", default=False,
-                                 help="only report the most recent byline")
-
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
@@ -40,10 +32,7 @@ class CmdAWSByline(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if bool(self.device) == bool(self.topic):
-            return False
-
-        if self.latest and not bool(self.topic):
+        if self.__opts.task is None:
             return False
 
         return True
@@ -52,23 +41,28 @@ class CmdAWSByline(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def device(self):
-        return self.__opts.device
+    def task_org(self):
+        return None if self.__opts.task is None else self.__opts.task[0]
 
 
     @property
-    def topic(self):
-        return self.__opts.topic
+    def task_group(self):
+        return None if self.__opts.task is None else self.__opts.task[1]
+
+
+    @property
+    def task_loc(self):
+        return None if self.__opts.task is None else self.__opts.task[2]
+
+
+    @property
+    def task_topic(self):
+        return None if self.__opts.task is None else self.__opts.task[3]
 
 
     @property
     def verbose(self):
         return self.__opts.verbose
-
-
-    @property
-    def latest(self):
-        return self.__opts.latest
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -78,5 +72,4 @@ class CmdAWSByline(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdAWSByline:{device:%s, topic:%s, latest:%s, verbose:%s}" % \
-               (self.device, self.topic, self.latest, self.verbose)
+        return "CmdAirNowMapper:{task:%s, verbose:%s}" % (self.__opts.task, self.verbose)
