@@ -1,9 +1,7 @@
 """
-Created on 25 Dec 2018
+Created on 14 Mar 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-source repo: scs_analysis
 """
 
 import optparse
@@ -11,26 +9,16 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdAWSByline(object):
+class CmdAirNowUploader(object):
     """unix command line handler"""
 
     def __init__(self):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -d DEVICE | -t TOPIC [-l] } [-v]", version="%prog 1.0")
-
-        # compulsory...
-        self.__parser.add_option("--device", "-d", type="string", nargs=1, action="store", dest="device",
-                                 help="device tag")
-
-        self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic",
-                                 help="topic path")
+        self.__parser = optparse.OptionParser(usage="%prog [-v] LOCAL_FILENAME [REMOTE_FILENAME]", version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--latest", "-l", action="store_true", dest="latest", default=False,
-                                 help="only report the most recent byline")
-
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
@@ -40,10 +28,7 @@ class CmdAWSByline(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if bool(self.device) == bool(self.topic):
-            return False
-
-        if self.latest and not bool(self.topic):
+        if self.local_filename is None:
             return False
 
         return True
@@ -52,23 +37,18 @@ class CmdAWSByline(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def device(self):
-        return self.__opts.device
+    def local_filename(self):
+        return self.__args[0] if len(self.__args) > 0 else None
 
 
     @property
-    def topic(self):
-        return self.__opts.topic
+    def remote_filename(self):
+        return self.__args[1] if len(self.__args) > 1 else None
 
 
     @property
     def verbose(self):
         return self.__opts.verbose
-
-
-    @property
-    def latest(self):
-        return self.__opts.latest
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -78,5 +58,5 @@ class CmdAWSByline(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdAWSByline:{device:%s, topic:%s, latest:%s, verbose:%s}" % \
-               (self.device, self.topic, self.latest, self.verbose)
+        return "CmdAirNowUploader:{local_filename:%s, remote_filename:%s, verbose:%s}" % \
+               (self.local_filename, self.remote_filename, self.verbose)

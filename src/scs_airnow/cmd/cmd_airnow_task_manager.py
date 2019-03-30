@@ -11,15 +11,17 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdAQCSVTaskManager(object):
+class CmdAirNowTaskManager(object):
     """unix command line handler"""
 
     def __init__(self):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [{ -l | -s [-c CODE] ORG GROUP LOC TOPIC DEVICE CHECKPOINT "
-                                                    "P1..PN | -d ORG GROUP LOC TOPIC }] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-v] [{ -l | -s [-c AGENCY_CODE SITE_CODE] ORG GROUP LOC "
+                                                    "TOPIC DEVICE DURATION CHECKPOINT UPLOAD_START P1..PN | "
+                                                    "-d ORG GROUP LOC TOPIC }]",
+                                              version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--list", "-l", action="store_true", dest="list", default=False,
@@ -28,8 +30,8 @@ class CmdAQCSVTaskManager(object):
         self.__parser.add_option("--set", "-s", action="store_true", dest="set", default=False,
                                  help="set a task")
 
-        self.__parser.add_option("--site-code", "-c", type="string", nargs=1, action="store", dest="code",
-                                 help="specify a site code (when setting a task)")
+        self.__parser.add_option("--codes", "-c", type="string", nargs=2, action="store", dest="codes",
+                                 help="specify an agency code and site code (when setting a task)")
 
         self.__parser.add_option("--delete", "-d", type="string", nargs=4, action="store", dest="delete",
                                  help="delete a task")
@@ -46,7 +48,7 @@ class CmdAQCSVTaskManager(object):
         if self.list and (self.is_set() or self.is_delete()):
             return False
 
-        if self.is_set() and len(self.__args) < 7:
+        if self.is_set() and len(self.__args) < 9:
             return False
 
         return True
@@ -93,18 +95,33 @@ class CmdAQCSVTaskManager(object):
 
 
     @property
-    def set_checkpoint(self):
+    def set_duration(self):
         return None if not self.__opts.set else self.__args[5]
 
 
     @property
-    def set_parameters(self):
-        return None if not self.__opts.set else self.__args[6:]
+    def set_checkpoint(self):
+        return None if not self.__opts.set else self.__args[6]
 
 
     @property
-    def code(self):
-        return self.__opts.code
+    def set_upload_start(self):
+        return None if not self.__opts.set else self.__args[7]
+
+
+    @property
+    def set_parameters(self):
+        return None if not self.__opts.set else self.__args[8:]
+
+
+    @property
+    def agency_code(self):
+        return None if not self.__opts.codes else self.__opts.codes[0]
+
+
+    @property
+    def site_code(self):
+        return None if not self.__opts.codes else self.__opts.codes[1]
 
 
     @property
@@ -141,5 +158,5 @@ class CmdAQCSVTaskManager(object):
     def __str__(self, *args, **kwargs):
         settings = self.__args if self.__opts.set else None
 
-        return "CmdAQCSVTaskManager:{list:%s, set:%s, code:%s, delete:%s, verbose:%s}" % \
-               (self.list, settings, self.code, self.__opts.delete, self.verbose)
+        return "CmdAirNowTaskManager:{list:%s, set:%s, codes:%s, delete:%s, verbose:%s}" % \
+               (self.list, settings, self.__opts.codes, self.__opts.delete, self.verbose)

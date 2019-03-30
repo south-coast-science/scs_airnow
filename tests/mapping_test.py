@@ -16,6 +16,8 @@ from scs_core.data.path_dict import PathDict
 
 # --------------------------------------------------------------------------------------------------------------------
 
+duration = 1
+
 pm1_mapping = DatumMapping("particulates", "pm1")
 print(JSONify.dumps(pm1_mapping), file=sys.stderr)
 print("-")
@@ -32,11 +34,11 @@ for line in sys.stdin:
     jstr = line.strip()
     datum = PathDict.construct_from_jstr(jstr)
 
-    record = pm1_mapping.aqcsv_record(datum)
+    record = pm1_mapping.aqcsv_record(datum, duration)
     print(JSONify.dumps(record))
 
-    record = pm2p5_mapping.aqcsv_record(datum)
+    record = pm2p5_mapping.aqcsv_record(datum, duration)
     print(JSONify.dumps(record))
 
-    record = pm10_mapping.aqcsv_record(datum)
+    record = pm10_mapping.aqcsv_record(datum, duration)
     print(JSONify.dumps(record))
