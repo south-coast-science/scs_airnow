@@ -43,7 +43,7 @@ At each checkpoint, if there are no values for a given path, then only the rec f
 set, then any checkpoints missing in the input data are written to stdout in sequence.
 
 SYNOPSIS
-sample_aggregate.py -c HH:MM:SS [-m] [-t] [-f] [-i] [-v] [PATH_1..PATH_N]
+sample_aggregate.py -c HH:MM:SS [-m] [-t] [-f] [-i ISO] [-v] [PATH_1..PATH_N]
 
 EXAMPLES
 csv_reader.py gases.csv | sample_aggregate.py -f -c **:/5:00 val
