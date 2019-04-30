@@ -23,8 +23,6 @@ scs_analysis/aqcsv_task
 
 import sys
 
-from subprocess import Popen
-
 from scs_airnow.cmd.cmd_airnow_task_runner import CmdAirNowTaskRunner
 from scs_airnow.helper.airnow_availability import AirNowAvailability
 
@@ -33,9 +31,12 @@ from scs_core.aqcsv.connector.airnow_mapping_task import AirNowMappingTaskList
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.sync.interval_timer import IntervalTimer
+from scs_core.sys.subprocess import Pipe
 
 from scs_host.sys.host import Host
 
+
+# TODO: fix the issue of locality for external scripts
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -105,11 +106,10 @@ if __name__ == '__main__':
                         break
 
                 # task...
-                args = ['./airnow_task.py', '-v', '-t', task.org, task.group, str(task.loc), task.topic,
-                        '-s', period_start.as_iso8601(), '-e', period_end.as_iso8601(), '-d', cmd.dir]
-                sp1 = Popen(args)
+                p = Pipe(('./airnow_task.py', '-v', '-t', task.org, task.group, str(task.loc), task.topic,
+                          '-s', period_start.as_iso8601(), '-e', period_end.as_iso8601(), '-d', cmd.dir))
 
-                sp1.wait()
+                p.wait()
 
                 report_count += 1
 

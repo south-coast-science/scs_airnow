@@ -27,17 +27,18 @@ import os
 import sys
 
 from glob import glob
-from subprocess import Popen, PIPE
 
 from scs_airnow.cmd.cmd_airnow_task import CmdAirNowTask
 from scs_airnow.helper.airnow_availability import AirNowAvailability
 
 from scs_core.aqcsv.connector.airnow_mapping_task import AirNowMappingTaskList
-
 from scs_core.data.datum import Datum
+from scs_core.sys.subprocess import Pipe
 
 from scs_host.sys.host import Host
 
+
+# TODO: fix the issue of locality for external scripts
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -120,16 +121,14 @@ if __name__ == '__main__':
             print("airnow_task: downloading...", end='', file=sys.stderr)
             sys.stderr.flush()
 
-        args = ['./airnow_downloader.py', '-t', cmd.org, cmd.group, cmd.loc, cmd.topic, '-s', start, '-e', end,
-                '-d', cmd.dir, '-f', task_prefix]
+        p = Pipe(('./airnow_downloader.py', '-t', cmd.org, cmd.group, cmd.loc, cmd.topic, '-s', start, '-e', end,
+                  '-d', cmd.dir, '-f', task_prefix))
 
-        sp1 = Popen(args)
+        return_code = p.wait()
 
-        sp1.wait()
-
-        if sp1.returncode > 0:
-            print("airnow_task: download failed with exit code %s." % sp1.returncode, file=sys.stderr)
-            exit(sp1.returncode)
+        if return_code > 0:
+            print("airnow_task: download failed with exit code %s." % return_code, file=sys.stderr)
+            exit(return_code)
 
         if cmd.verbose:
             print("done.", file=sys.stderr)
@@ -142,20 +141,15 @@ if __name__ == '__main__':
             print("airnow_task: mapping...", end='', file=sys.stderr)
             sys.stderr.flush()
 
-        args = ['./csv_reader.py', joined_filename]
-        sp1 = Popen(args, stdout=PIPE)
+        p = Pipe(('./csv_reader.py', joined_filename),
+                 ('./airnow_mapper.py', '-t', cmd.org, cmd.group, cmd.loc, cmd.topic),
+                 ('./csv_writer.py', '-x', mapped_filename))
 
-        args = ['./airnow_mapper.py', '-t', cmd.org, cmd.group, cmd.loc, cmd.topic]
-        sp2 = Popen(args, stdin=sp1.stdout, stdout=PIPE)
+        return_code = p.wait()
 
-        args = ['./csv_writer.py', '-x', mapped_filename]
-        sp3 = Popen(args, stdin=sp2.stdout)
-
-        sp3.wait()
-
-        if sp3.returncode > 0:
-            print("airnow_task: mapping failed with exit code %s." % sp3.returncode, file=sys.stderr)
-            exit(sp3.returncode)
+        if return_code > 0:
+            print("airnow_task: mapping failed with exit code %s." % return_code, file=sys.stderr)
+            exit(return_code)
 
         if cmd.verbose:
             print("done.", file=sys.stderr)
@@ -168,14 +162,13 @@ if __name__ == '__main__':
             print("airnow_task: uploading...", end='', file=sys.stderr)
             sys.stderr.flush()
 
-        args = ['./airnow_uploader.py', mapped_filename]
-        sp1 = Popen(args)
+        p = Pipe(('./airnow_uploader.py', mapped_filename))
 
-        sp1.wait()
+        return_code = p.wait()
 
-        if sp1.returncode > 0:
-            print("airnow_task: upload failed with exit code %s." % sp1.returncode, file=sys.stderr)
-            exit(sp1.returncode)
+        if return_code > 0:
+            print("airnow_task: upload failed with exit code %s." % return_code, file=sys.stderr)
+            exit(return_code)
 
         if cmd.verbose:
             print("done.", file=sys.stderr)
@@ -203,16 +196,15 @@ if __name__ == '__main__':
             sys.stderr.flush()
 
         files = glob(file_path + '*')
-        #
+
         if files:
-            args = ['rm'] + files
-            sp1 = Popen(args)
+            p = Pipe(['rm'] + files)
 
-            sp1.wait()
+            return_code = p.wait()
 
-            if sp1.returncode > 0:
-                print("airnow_task: delete failed with exit code %s." % sp1.returncode, file=sys.stderr)
-                exit(sp1.returncode)
+            if return_code > 0:
+                print("airnow_task: delete failed with exit code %s." % return_code, file=sys.stderr)
+                exit(return_code)
 
         if cmd.verbose:
             print("done.", file=sys.stderr)
