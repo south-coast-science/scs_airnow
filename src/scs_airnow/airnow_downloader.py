@@ -24,8 +24,6 @@ scs_analysis/aqcsv_task_manager
 import os
 import sys
 
-from subprocess import Popen, PIPE
-
 from scs_airnow.cmd.cmd_airnow_downloader import CmdAirNowDownloader
 from scs_airnow.helper.airnow_availability import AirNowAvailability
 
@@ -34,9 +32,12 @@ from scs_core.aqcsv.connector.airnow_mapping_task import AirNowMappingTaskList
 from scs_core.data.datum import Datum
 
 from scs_core.sys.filesystem import Filesystem
+from scs_core.sys.subprocess import Pipe
 
 from scs_host.sys.host import Host
 
+
+# TODO: fix the issue of locality for external scripts
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -133,24 +134,17 @@ if __name__ == '__main__':
             print("airnow_downloader: downloading %s data..." % task.topic, end='', file=sys.stderr)
             sys.stderr.flush()
 
-        args = ['./aws_topic_history.py', task.environment_path(), '-s', start, '-e', end]
-        sp1 = Popen(args, stdout=PIPE)
+        p = Pipe(('./aws_topic_history.py', task.environment_path(), '-s', start, '-e', end),
+                 ['./node.py', 'rec', 'tag', 'src'] + ['val.' + param for param in task.parameters],
+                 ('./sample_aggregate.py', '-c', task.checkpoint),
+                 ('./csv_writer.py', env_filename))
 
-        args = ['./node.py', 'rec', 'tag', 'src'] + ['val.' + param for param in task.parameters]
-        sp2 = Popen(args, stdin=sp1.stdout, stdout=PIPE)
+        return_code = p.wait()
 
-        args = ['./sample_aggregate.py', '-c', task.checkpoint]
-        sp3 = Popen(args, stdin=sp2.stdout, stdout=PIPE)
-
-        args = ['./csv_writer.py', env_filename]
-        sp4 = Popen(args, stdin=sp3.stdout)
-
-        sp4.wait()
-
-        if sp4.returncode > 0:
-            print("airnow_downloader: %s download failed with exit code %s." % (task.topic, sp4.returncode),
+        if return_code > 0:
+            print("airnow_downloader: %s download failed with exit code %s." % (task.topic, return_code),
                   file=sys.stderr)
-            exit(sp4.returncode)
+            exit(return_code)
 
         if cmd.verbose:
             print("done.", file=sys.stderr)
@@ -165,23 +159,16 @@ if __name__ == '__main__':
             print("airnow_downloader: downloading status data...", end='', file=sys.stderr)
             sys.stderr.flush()
 
-        args = ['./aws_topic_history.py', task.status_path(), '-s', start, '-e', end]
-        sp1 = Popen(args, stdout=PIPE)
+        p = Pipe(('./aws_topic_history.py', task.status_path(), '-s', start, '-e', end),
+                 ('./node.py', 'rec', 'tag', 'val.tz', 'val.sch', 'val.gps', 'val.airnow'),
+                 ('./sample_aggregate.py', '-c', task.checkpoint),
+                 ('./csv_writer.py', status_filename))
 
-        args = ['./node.py', 'rec', 'tag', 'val.tz', 'val.sch', 'val.gps', 'val.airnow']
-        sp2 = Popen(args, stdin=sp1.stdout, stdout=PIPE)
+        return_code = p.wait()
 
-        args = ['./sample_aggregate.py', '-c', task.checkpoint]
-        sp3 = Popen(args, stdin=sp2.stdout, stdout=PIPE)
-
-        args = ['./csv_writer.py', status_filename]
-        sp4 = Popen(args, stdin=sp3.stdout)
-
-        sp4.wait()
-
-        if sp4.returncode > 0:
-            print("airnow_downloader: status download failed with exit code %s." % sp4.returncode, file=sys.stderr)
-            exit(sp4.returncode)
+        if return_code > 0:
+            print("airnow_downloader: status download failed with exit code %s." % return_code, file=sys.stderr)
+            exit(return_code)
 
         if cmd.verbose:
             print("done.", file=sys.stderr)
@@ -196,17 +183,14 @@ if __name__ == '__main__':
             print("airnow_downloader: joining...", end='', file=sys.stderr)
             sys.stderr.flush()
 
-        args = ['./csv_join.py', '-i', '-l', task.topic, 'rec', env_filename, '-r', 'status', 'rec', status_filename]
-        sp1 = Popen(args, stdout=PIPE)
+        p = Pipe(('./csv_join.py', '-i', '-l', task.topic, 'rec', env_filename, '-r', 'status', 'rec', status_filename),
+                 ('./csv_writer.py', joined_filename))
 
-        args = ['./csv_writer.py', joined_filename]
-        sp2 = Popen(args, stdin=sp1.stdout)
+        return_code = p.wait()
 
-        sp2.wait()
-
-        if sp2.returncode > 0:
-            print("airnow_downloader: join failed with exit code %s." % sp2.returncode, file=sys.stderr)
-            exit(sp2.returncode)
+        if return_code > 0:
+            print("airnow_downloader: join failed with exit code %s." % return_code, file=sys.stderr)
+            exit(return_code)
 
         if cmd.verbose:
             print("done.", file=sys.stderr)
