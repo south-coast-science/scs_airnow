@@ -95,6 +95,7 @@ if __name__ == '__main__':
 
         join = Join.construct(cmd.left_prefix, cmd.left_pk, cmd.right_prefix, cmd.right_pk, cmd.iso8601)
 
+        # read left CSV file...
         try:
             reader = CSVReader(filename=cmd.left_filename)
         except FileNotFoundError:
@@ -127,6 +128,7 @@ if __name__ == '__main__':
 
         reader.close()
 
+        # read right CSV file...
         try:
             reader = CSVReader(filename=cmd.right_filename)
         except FileNotFoundError:
@@ -188,6 +190,9 @@ if __name__ == '__main__':
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
+
+    except KeyError as ex:
+        print("csv_join: KeyError: %s" % ex, file=sys.stderr)
 
     except KeyboardInterrupt:
         if cmd and cmd.verbose:

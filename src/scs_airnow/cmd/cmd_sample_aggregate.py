@@ -18,7 +18,7 @@ class CmdSampleAggregate(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog -c HH:MM:SS [-m] [-f] [-i] [-v] [PATH_1 .. PATH_N]",
+        self.__parser = optparse.OptionParser(usage="%prog -c HH:MM:SS [-m] [-f] [-i ISO] [-v] [PATH_1 .. PATH_N]",
                                               version="%prog 1.0")
 
         # compulsory...
@@ -43,14 +43,18 @@ class CmdSampleAggregate(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def is_valid(self):
+        if self.checkpoint is None:
+            return False
+
+        return True
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @property
     def checkpoint(self):
         return self.__opts.checkpoint
-
-
-    @property
-    def nodes(self):
-        return self.__args if len(self.__args) > 0 else [None]
 
 
     @property
@@ -71,6 +75,11 @@ class CmdSampleAggregate(object):
     @property
     def verbose(self):
         return self.__opts.verbose
+
+
+    @property
+    def nodes(self):
+        return self.__args
 
 
     # ----------------------------------------------------------------------------------------------------------------
