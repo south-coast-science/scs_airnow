@@ -28,7 +28,7 @@ from scs_airnow.helper.airnow_availability import AirNowAvailability
 
 from scs_core.aqcsv.connector.airnow_mapping_task import AirNowMappingTaskList
 
-from scs_core.data.localized_datetime import LocalizedDatetime
+from scs_core.data.datetime import LocalizedDatetime
 
 from scs_core.sync.interval_timer import IntervalTimer
 from scs_core.sys.subprocess import Pipe
