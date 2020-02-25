@@ -96,7 +96,7 @@ if __name__ == '__main__':
             sys.stderr.flush()
 
         joined_filename = file_path + '-joined.csv'
-        mapped_filename = file_path + '.' + task.agency_code
+        mapped_filename = '.'.join((file_path, task.agency_code))
 
 
         # ------------------------------------------------------------------------------------------------------------
