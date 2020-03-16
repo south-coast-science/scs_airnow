@@ -74,7 +74,7 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        now = LocalizedDatetime.now() if cmd.end is None else cmd.end
+        now = LocalizedDatetime.now().utc() if cmd.end is None else cmd.end
 
         # tasks...
         for task in tasks.items():
