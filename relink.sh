@@ -28,4 +28,3 @@ ln -vf ${SOURCE}/cmd/cmd_node.py                        ${TARGET}/cmd/cmd_node.p
 ln -vf ${SOURCE}/cmd/cmd_sample_aggregate.py            ${TARGET}/cmd/cmd_sample_aggregate.py
 
 ln -vf ${SOURCE}/handler/aws_topic_history_reporter.py   ${TARGET}/helper/aws_topic_history_reporter.py
-ln -vf ${SOURCE}/handler/sample_aggregate.py             ${TARGET}/helper/sample_aggregate.py
