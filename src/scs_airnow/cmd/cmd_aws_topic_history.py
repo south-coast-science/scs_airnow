@@ -21,21 +21,24 @@ class CmdAWSTopicHistory(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -l | -t { [[DD-]HH:]MM[:SS] | :SS } | -s START [-e END] } "
-                                                    "[-r] [-w] [-v] TOPIC", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -l | -a LATEST_AT | -t { [[DD-]HH:]MM[:SS] | :SS } | "
+                                                    "-s START [-e END] } [-r] [-w] [-v] TOPIC", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--latest", "-l", action="store_true", dest="latest", default=False,
-                                 help="the most recent document only")
+                                 help="the most recent document")
+
+        self.__parser.add_option("--latest-at", "-a", type="string", nargs=1, action="store", dest="latest_at",
+                                 help="the most recent document up to ISO 8601 datetime LATEST_AT")
 
         self.__parser.add_option("--timedelta", "-t", type="string", nargs=1, action="store", dest="timedelta",
                                  help="starting days / hours / minutes / seconds ago, and ending now")
 
         self.__parser.add_option("--start", "-s", type="string", nargs=1, action="store", dest="start",
-                                 help="ISO 8601 datetime start")
+                                 help="ISO 8601 datetime START")
 
         self.__parser.add_option("--end", "-e", type="string", nargs=1, action="store", dest="end",
-                                 help="ISO 8601 datetime end")
+                                 help="ISO 8601 datetime END")
 
         self.__parser.add_option("--rec-only", "-r", action="store_true", dest="rec_only", default=False,
                                  help="retrieve only the rec field")
@@ -55,7 +58,7 @@ class CmdAWSTopicHistory(object):
         if self.topic is None:
             return False
 
-        if self.__opts.timedelta is not None and self.timedelta is None:
+        if self.__opts.start is None and self.__opts.end is not None:
             return False
 
         count = 0
@@ -63,10 +66,13 @@ class CmdAWSTopicHistory(object):
         if self.latest:
             count += 1
 
-        if self.timedelta is not None:
+        if self.__opts.latest_at is not None:
             count += 1
 
-        if self.start is not None:
+        if self.__opts.timedelta is not None:
+            count += 1
+
+        if self.__opts.start is not None:
             count += 1
 
         if count != 1:
@@ -75,18 +81,32 @@ class CmdAWSTopicHistory(object):
         return True
 
 
+    def is_valid_latest_at(self):
+        if self.__opts.latest_at is None:
+            return True
+
+        return self.latest_at is not None
+
+
+    def is_valid_timedelta(self):
+        if self.__opts.timedelta is None:
+            return True
+
+        return self.timedelta is not None
+
+
     def is_valid_start(self):
         if self.__opts.start is None:
             return True
 
-        return LocalizedDatetime.construct_from_iso8601(self.__opts.start) is not None
+        return self.start is not None
 
 
     def is_valid_end(self):
         if self.__opts.end is None:
             return True
 
-        return LocalizedDatetime.construct_from_iso8601(self.__opts.end) is not None
+        return self.end is not None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -97,18 +117,23 @@ class CmdAWSTopicHistory(object):
 
 
     @property
+    def latest_at(self):
+        return LocalizedDatetime.construct_from_iso8601(self.__opts.latest_at)
+
+
+    @property
     def timedelta(self):
         return Timedelta.construct_from_flag(self.__opts.timedelta)
 
 
     @property
     def start(self):
-        return None if self.__opts.start is None else LocalizedDatetime.construct_from_iso8601(self.__opts.start)
+        return LocalizedDatetime.construct_from_iso8601(self.__opts.start)
 
 
     @property
     def end(self):
-        return None if self.__opts.end is None else LocalizedDatetime.construct_from_iso8601(self.__opts.end)
+        return LocalizedDatetime.construct_from_iso8601(self.__opts.end)
 
 
     @property
@@ -138,7 +163,7 @@ class CmdAWSTopicHistory(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdAWSTopicHistory:{latest:%s, timedelta:%s, start:%s, end:%s, rec_only:%s, include_wrapper:%s, " \
-               "verbose:%s, topic:%s}" % \
-                    (self.latest, self.timedelta, self.start, self.end, self.rec_only, self.include_wrapper,
-                     self.verbose, self.topic)
+        return "CmdAWSTopicHistory:{latest:%s, latest_at:%s, timedelta:%s, start:%s, end:%s, rec_only:%s, " \
+               "include_wrapper:%s, verbose:%s, topic:%s}" % \
+                    (self.latest, self.__opts.latest_at, self.__opts.timedelta, self.start, self.end, self.rec_only,
+                     self.include_wrapper, self.verbose, self.topic)
