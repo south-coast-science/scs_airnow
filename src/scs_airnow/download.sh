@@ -13,21 +13,21 @@ ep3=val.pm10
 
 period=10
 
-checkpoint=**:/01:00
+checkpoint="**:/01:00"
 
 wd=.
 
 # environment...
 ${wd}/aws_topic_history.py -v ${org}/${group}/loc/${loc}/${topic} -t ${period} | \
 ${wd}/node.py -v rec tag src ${ep1} ${ep2} ${ep3} | \
-${wd}/sample_aggregate.py -v -c ${checkpoint} | \
+${wd}/sample_aggregate.py -v -c "${checkpoint}" | \
 ${wd}/csv_writer.py -v data/${topic}-1min.csv
 echo -
 
 # device status...
 ${wd}/aws_topic_history.py -v ${org}/${group}/device/${device}/status -t ${period} | \
 ${wd}/node.py -v rec tag val.tz val.sch val.gps val.airnow | \
-${wd}/sample_aggregate.py -v -c ${checkpoint} | \
+${wd}/sample_aggregate.py -v -c "${checkpoint}" | \
 ${wd}/csv_writer.py -v data/status-1min.csv
 echo -
 
