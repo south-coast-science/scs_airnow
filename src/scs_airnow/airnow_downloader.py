@@ -200,5 +200,4 @@ if __name__ == '__main__':
     # end...
 
     except KeyboardInterrupt:
-        if cmd.verbose:
-            print("airnow_downloader: KeyboardInterrupt", file=sys.stderr)
+        print(file=sys.stderr)
