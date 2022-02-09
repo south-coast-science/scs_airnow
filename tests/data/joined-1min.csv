@@ -1,0 +1,11 @@
+rec,particulates.val.pm1,particulates.val.pm2p5,particulates.val.pm10,particulates.tag,particulates.src,status.val.tz.name,status.val.tz.utc-offset,status.val.sch.scs-particulates.tally,status.val.sch.scs-particulates.interval,status.val.sch.scs-status.tally,status.val.sch.scs-status.interval,status.val.sch.scs-climate.tally,status.val.sch.scs-climate.interval,status.val.sch.scs-gases.tally,status.val.sch.scs-gases.interval,status.val.gps.pos:0,status.val.gps.pos:1,status.val.gps.qual,status.val.gps.elv,status.val.airnow.site,status.tag
+2019-03-13T14:50:00Z,3.8,5.6,6.9,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83375415,-0.13440362,1.0,40.5,826987654321.0,scs-bgx-401
+2019-03-13T14:51:00Z,4.0,5.9,8.2,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83375415,-0.13440362,1.0,40.5,826987654321.0,scs-bgx-401
+2019-03-13T14:52:00Z,3.7,5.4,7.1,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83375415,-0.13440362,1.0,40.5,826987654321.0,scs-bgx-401
+2019-03-13T14:53:00Z,3.8,5.7,7.8,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83375415,-0.13440362,1.0,40.5,826987654321.0,scs-bgx-401
+2019-03-13T14:54:00Z,3.8,5.6,8.2,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83375415,-0.13440362,1.0,40.5,826987654321.0,scs-bgx-401
+2019-03-13T14:55:00Z,3.5,5.1,7.7,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83375415,-0.13440362,1.0,40.5,826987654321.0,scs-bgx-401
+2019-03-13T14:56:00Z,4.2,6.1,8.0,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83375415,-0.13440362,1.0,40.5,826987654321.0,scs-bgx-401
+2019-03-13T14:57:00Z,3.7,5.4,6.2,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83375415,-0.13440362,1.0,40.5,826987654321.0,scs-bgx-401
+2019-03-13T14:58:00Z,3.7,5.4,7.8,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83375415,-0.13440362,1.0,40.5,826987654321.0,scs-bgx-401
+2019-03-13T14:59:00Z,4.2,5.9,6.7,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83375415,-0.13440362,1.0,40.5,826987654321.0,scs-bgx-401

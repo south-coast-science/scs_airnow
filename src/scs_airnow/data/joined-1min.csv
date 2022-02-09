@@ -1,0 +1,11 @@
+rec,particulates.val.pm1,particulates.val.pm2p5,particulates.val.pm10,particulates.tag,particulates.src,status.val.tz.name,status.val.tz.utc-offset,status.val.sch.scs-particulates.tally,status.val.sch.scs-particulates.interval,status.val.sch.scs-status.tally,status.val.sch.scs-status.interval,status.val.sch.scs-climate.tally,status.val.sch.scs-climate.interval,status.val.sch.scs-gases.tally,status.val.sch.scs-gases.interval,status.val.gps.pos:0,status.val.gps.pos:1,status.val.gps.elv,status.val.gps.qual,status.val.airnow.site,status.tag
+2020-01-10T15:01:00Z,2.4,3.5,8.5,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83374613,-0.13895586,29.1,2.0,826987654321.0,scs-bgx-401
+2020-01-10T15:02:00Z,2.2,3.5,27.2,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83374394,-0.13895337,28.4,2.0,826987654321.0,scs-bgx-401
+2020-01-10T15:03:00Z,1.9,2.7,5.3,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83374032,-0.13894875,27.6,2.0,826987654321.0,scs-bgx-401
+2020-01-10T15:04:00Z,2.4,3.7,19.8,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83373784,-0.13894137,27.2,2.0,826987654321.0,scs-bgx-401
+2020-01-10T15:05:00Z,3.2,4.4,11.6,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83374,-0.13893541,26.9,2.0,826987654321.0,scs-bgx-401
+2020-01-10T15:06:00Z,2.3,3.2,7.1,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83374011,-0.13894796,24.8,1.0,826987654321.0,scs-bgx-401
+2020-01-10T15:07:00Z,2.5,3.6,7.8,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83373607,-0.13898056,20.7,1.0,826987654321.0,scs-bgx-401
+2020-01-10T15:08:00Z,2.0,3.1,8.1,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.8337319,-0.13899363,18.5,1.0,826987654321.0,scs-bgx-401
+2020-01-10T15:09:00Z,1.8,2.6,4.8,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83372666,-0.13899217,16.2,1.0,826987654321.0,scs-bgx-401
+2020-01-10T15:10:00Z,2.0,2.8,6.6,scs-bgx-401,N2,Europe/London,+00:00,1.0,10.0,1.0,60.0,1.0,60.0,1.0,10.0,50.83372446,-0.13899381,15.0,1.0,826987654321.0,scs-bgx-401
