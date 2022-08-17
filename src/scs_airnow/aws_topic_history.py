@@ -56,7 +56,7 @@ https://github.com/curl/curl
 import sys
 
 from scs_analysis.cmd.cmd_aws_topic_history import CmdAWSTopicHistory
-from scs_analysis.handler.aws_topic_history_reporter import AWSTopicHistoryReporter
+from scs_analysis.handler.batch_download_reporter import BatchDownloadReporter
 
 from scs_core.aws.client.api_auth import APIAuth
 from scs_core.aws.manager.byline_manager import BylineManager
@@ -81,6 +81,7 @@ if __name__ == '__main__':
 
     agent = None
     reporter = None
+    start_time = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -130,12 +131,12 @@ if __name__ == '__main__':
         logger.info(api_auth)
 
         # reporter...
-        reporter = AWSTopicHistoryReporter(cmd.verbose)
+        reporter = BatchDownloadReporter()
 
-        # byline manager...
+        # BylineManager...
         byline_manager = BylineManager(api_auth)
 
-        # message manager...
+        # MessageManager...
         message_manager = MessageManager(api_auth, reporter=reporter)
 
         logger.info(message_manager)
@@ -150,6 +151,8 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        start_time = LocalizedDatetime.now()
 
         if cmd.latest_at:
             message = message_manager.find_latest_for_topic(cmd.topic, cmd.latest_at, None, cmd.include_wrapper,
@@ -204,3 +207,7 @@ if __name__ == '__main__':
     finally:
         if reporter:
             logger.info("blocks: %s" % reporter.block_count)
+
+        if start_time:
+            elapsed_time = LocalizedDatetime.now() - start_time
+            logger.info("elapsed time: %s" % elapsed_time.as_json())
