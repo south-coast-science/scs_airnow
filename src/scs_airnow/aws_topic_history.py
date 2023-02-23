@@ -146,7 +146,7 @@ if __name__ == '__main__':
         # check...
 
         if not Network.is_available():
-            logger.info("waiting for network.")
+            logger.info("waiting for network")
             Network.wait()
 
 
@@ -196,16 +196,12 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (ConnectionError, HTTPException) as ex:
-        logger.error(repr(ex))
-        exit(1)
-
-    except ResourceUnavailableException as ex:
-        logger.error(repr(ex))
-        exit(1)
-
     except KeyboardInterrupt:
         print(file=sys.stderr)
+
+    except (HTTPException, ResourceUnavailableException) as ex:
+        logger.error(repr(ex))
+        exit(1)
 
     finally:
         if reporter:
