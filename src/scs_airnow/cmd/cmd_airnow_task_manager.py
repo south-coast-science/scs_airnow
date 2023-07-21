@@ -10,7 +10,6 @@ from scs_airnow import version
 
 
 # TODO: split off SiteConf functions
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class CmdAirNowTaskManager(object):
