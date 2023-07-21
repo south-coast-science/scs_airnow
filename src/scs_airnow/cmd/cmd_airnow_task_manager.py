@@ -6,6 +6,8 @@ Created on 13 March 2019
 
 import optparse
 
+from scs_airnow import version
+
 
 # TODO: split off SiteConf functions
 
@@ -21,7 +23,7 @@ class CmdAirNowTaskManager(object):
         self.__parser = optparse.OptionParser(usage="%prog [-v] [{ -l | -s [-c AGENCY_CODE SITE_CODE] ORG GROUP LOC "
                                                     "TOPIC DEVICE DURATION CHECKPOINT UPLOAD_START P1..PN | "
                                                     "-d ORG GROUP LOC TOPIC }]",
-                                              version="%prog 1.0")
+                                              version=version())
 
         # optional...
         self.__parser.add_option("--list", "-l", action="store_true", dest="list", default=False,

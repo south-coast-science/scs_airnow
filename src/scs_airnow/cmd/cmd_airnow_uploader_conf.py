@@ -6,6 +6,8 @@ Created on 21 Mar 2019
 
 import optparse
 
+from scs_airnow import version
+
 from scs_core.aqcsv.conf.airnow_uploader_conf import AirNowUploaderConf
 
 
@@ -19,7 +21,7 @@ class CmdAirNowUploaderConf(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog [{ -c HOST USERNAME PASSWORD [-p PORT] "
-                                                    "[-r REMOTE_PATH] | -d }] [-v]", version="%prog 1.0")
+                                                    "[-r REMOTE_PATH] | -d }] [-v]", version=version())
 
         # optional...
         self.__parser.add_option("--connection", "-c", type="string", nargs=3, action="store", dest="connection",

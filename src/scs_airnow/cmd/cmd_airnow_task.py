@@ -6,6 +6,8 @@ Created on 14 Mar 2019
 
 import optparse
 
+from scs_airnow import version
+
 from scs_core.data.datetime import LocalizedDatetime
 
 
@@ -19,7 +21,7 @@ class CmdAirNowTask(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog -t ORG GROUP LOC TOPIC -s START -e END [-d DIR] [-c] [-v]",
-                                              version="%prog 1.0")
+                                              version=version())
 
         # compulsory...
         self.__parser.add_option("--task", "-t", type="string", nargs=4, action="store", dest="task",
