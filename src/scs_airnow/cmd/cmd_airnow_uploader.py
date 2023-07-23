@@ -6,6 +6,8 @@ Created on 14 Mar 2019
 
 import optparse
 
+from scs_airnow import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -16,7 +18,7 @@ class CmdAirNowUploader(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-v] LOCAL_FILENAME [REMOTE_FILENAME]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-v] LOCAL_FILENAME [REMOTE_FILENAME]", version=version())
 
         # optional...
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,

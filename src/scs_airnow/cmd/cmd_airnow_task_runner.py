@@ -6,6 +6,8 @@ Created on 14 Mar 2019
 
 import optparse
 
+from scs_airnow import version
+
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.timedelta import Timedelta
 
@@ -20,17 +22,17 @@ class CmdAirNowTaskRunner(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog -p [[DD-]HH:]MM -d DIR [-e END] [-c] [-v]",
-                                              version="%prog 1.0")
+                                              version=version())
 
         # compulsory...
-        self.__parser.add_option("--sample-period", "-p", type="string", nargs=1, action="store", dest="sample_period",
+        self.__parser.add_option("--sample-period", "-p", type="string", action="store", dest="sample_period",
                                  help="reporting period days / hours / minutes")
 
-        self.__parser.add_option("--dir", "-d", type="string", nargs=1, action="store", dest="dir",
+        self.__parser.add_option("--dir", "-d", type="string", action="store", dest="dir",
                                  help="directory for temporary CSV files")
 
         # optional...
-        self.__parser.add_option("--end", "-e", type="string", nargs=1, action="store", dest="end",
+        self.__parser.add_option("--end", "-e", type="string", action="store", dest="end",
                                  help="ISO 8601 datetime reporting end")
 
         self.__parser.add_option("--check-availability", "-c", action="store_true", dest="check", default=False,
