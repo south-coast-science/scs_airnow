@@ -6,6 +6,7 @@ Created on 14 Mar 2019
 
 import optparse
 
+from scs_airnow import version
 from scs_core.data.datetime import LocalizedDatetime
 
 
@@ -19,20 +20,20 @@ class CmdAirNowTask(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog -t ORG GROUP LOC TOPIC -s START -e END [-d DIR] [-c] [-v]",
-                                              version="%prog 1.0")
+                                              version=version())
 
         # compulsory...
         self.__parser.add_option("--task", "-t", type="string", nargs=4, action="store", dest="task",
                                  help="specify the task")
 
-        self.__parser.add_option("--start", "-s", type="string", nargs=1, action="store", dest="start",
+        self.__parser.add_option("--start", "-s", type="string", action="store", dest="start",
                                  help="ISO 8601 datetime start")
 
-        self.__parser.add_option("--end", "-e", type="string", nargs=1, action="store", dest="end",
+        self.__parser.add_option("--end", "-e", type="string", action="store", dest="end",
                                  help="ISO 8601 datetime end")
 
         # optional...
-        self.__parser.add_option("--dir", "-d", type="string", nargs=1, action="store", dest="dir",
+        self.__parser.add_option("--dir", "-d", type="string", action="store", dest="dir",
                                  help="write the output to a CSV file in the named directory")
 
         self.__parser.add_option("--check-availability", "-c", action="store_true", dest="check", default=False,
