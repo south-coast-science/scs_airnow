@@ -11,7 +11,7 @@ import sys
 
 from subprocess import check_output, CalledProcessError
 
-from scs_core.aws.data.byline import Byline
+from scs_core.aws.manager.byline.byline import Byline
 
 
 # --------------------------------------------------------------------------------------------------------------------
