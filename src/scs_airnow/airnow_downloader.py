@@ -38,7 +38,6 @@ from scs_host.sys.host import Host
 
 
 # TODO: fix the issue of locality for external scripts
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
