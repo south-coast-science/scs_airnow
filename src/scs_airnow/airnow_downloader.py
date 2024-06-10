@@ -135,7 +135,7 @@ if __name__ == '__main__':
 
         p = Pipe(('./aws_topic_history.py', task.environment_path(), '-s', start, '-e', end),
                  ['./node.py', 'rec', 'tag', 'src'] + ['val.' + param for param in task.parameters],
-                 ('./sample_aggregate.py', '-c', task.checkpoint),
+                 ('./sample_aggregate.py', '-p', task.checkpoint),
                  ('./csv_writer.py', env_filename))
 
         return_code = p.wait()
@@ -160,7 +160,7 @@ if __name__ == '__main__':
 
         p = Pipe(('./aws_topic_history.py', task.status_path(), '-s', start, '-e', end),
                  ('./node.py', 'rec', 'tag', 'val.tz', 'val.sch', 'val.gps', 'val.airnow'),
-                 ('./sample_aggregate.py', '-c', task.checkpoint),
+                 ('./sample_aggregate.py', '-p', task.checkpoint),
                  ('./csv_writer.py', status_filename))
 
         return_code = p.wait()
